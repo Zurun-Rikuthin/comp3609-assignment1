@@ -31,7 +31,7 @@ public final class StatusPanel extends JPanel {
 
     public StatusPanel() {
         setBackground(new Color(87, 73, 100));
-        setPreferredSize(new Dimension(580, 60));
+        setPreferredSize(new Dimension(GameFrame.FRAME_WIDTH, 60));
         setLayout(new BoxLayout(this, BoxLayout.X_AXIS));
 
         score = 0;

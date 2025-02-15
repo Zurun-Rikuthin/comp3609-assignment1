@@ -8,11 +8,14 @@ import javax.swing.BoxLayout;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
-public class BlasterPanel extends JPanel {
+import com.rikuthin.GameFrame;
+
+public class BlasterPanel extends JPanel{
 
     private final JLabel remainingBubblesCounterLabel;
     private final JPanel remainingBubblesPanel;
     private final JPanel heldBubblesPanel;
+    private final JLabel mouseCoords;
 
     private int remainingBubbles;
 
@@ -20,7 +23,7 @@ public class BlasterPanel extends JPanel {
         remainingBubbles = -1;
 
         setBackground(new Color(159, 131, 131));
-        setPreferredSize(new Dimension(580, 110));
+        setPreferredSize(new Dimension(GameFrame.FRAME_WIDTH, 110));
         setLayout(new BorderLayout());
 
         remainingBubblesPanel = new JPanel();
@@ -31,11 +34,18 @@ public class BlasterPanel extends JPanel {
         heldBubblesPanel = new JPanel();
         add(remainingBubblesCounterLabel);
 
+        mouseCoords = new JLabel("Mouse: ()");
+        add(mouseCoords, BorderLayout.SOUTH);
+
         updateRemainingBubblesCounter(remainingBubbles);
     }
 
     private void updateRemainingBubblesCounter(final int newValue) {
         remainingBubblesCounterLabel.setText(String.format("Remaining Bubbles: %d", newValue));
         remainingBubbles = newValue;
+    }
+
+    public void updateMouseCoords(int x, int y) {
+        mouseCoords.setText(String.format("Mouse: (%d, %d)", x, y));
     }
 }

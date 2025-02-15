@@ -8,6 +8,7 @@ import java.util.Objects;
 
 import javax.swing.JPanel;
 
+import com.rikuthin.App;
 import com.rikuthin.Bearing2D;
 
 /**
@@ -19,7 +20,6 @@ public class Bubble extends Ellipse2D.Double implements Runnable {
 
     /**
      * The panel within which the bubble moves.
-     *
      */
     private final JPanel panel;
 
@@ -133,7 +133,7 @@ public class Bubble extends Ellipse2D.Double implements Runnable {
 
         double radians = Math.toRadians(bearing.getDegrees());
         x += pixelsPerTick * Math.cos(radians);
-        y += pixelsPerTick * Math.sin(radians);
+        y -= pixelsPerTick * Math.sin(radians); // Inverted because +y is downward in Swing compared to normal Cartesian +y
 
         Dimension panelSize = panel.getSize();
 
@@ -162,15 +162,15 @@ public class Bubble extends Ellipse2D.Double implements Runnable {
     /**
      * Sets a new position for the bubble if it's within the panel boundaries.
      *
-     * @param xPosition The new x-coordinate.
-     * @param yPosition The new y-coordinate.
+     * @param x The new x-coordinate.
+     * @param y The new y-coordinate.
      */
-    public void setLocation(final int xPosition, final int yPosition) {
+    public void setLocation(final int x, final int y) {
         Dimension panelSize = panel.getSize();
-        if (xPosition >= 0 && xPosition + width < panelSize.width
-                && yPosition >= 0 && yPosition + height < panelSize.height) {
-            x = xPosition;
-            y = yPosition;
+        if (x >= 0 && x + width < panelSize.width
+                && y >= 0 && y + height < panelSize.height) {
+            this.x = x;
+            this.y = y;
         }
     }
 
@@ -195,7 +195,7 @@ public class Bubble extends Ellipse2D.Double implements Runnable {
         while (isMoving) {
             move();
             try {
-                Thread.sleep(20); // Controls speed
+                Thread.sleep(App.tickSpeedMs); // Controls speed
             } catch (InterruptedException e) {
                 Thread.currentThread().interrupt(); // Restore interrupted state
                 break;

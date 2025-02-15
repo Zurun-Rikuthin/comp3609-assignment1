@@ -12,6 +12,13 @@ public final class Bearing2D {
      * Creates a Bearing2D instance with a specified angle in degrees.
      * The angle is automatically normalized to the range [0, 360).
      * 
+     * Values of note:
+     *  - <value> = 0: NORTH (up)
+     *  - <value> = 90: EAST (right)
+     *  - <value> = 180: SOUTH (down)
+     *  - <value> = 270: WEST (left)
+     *  - <value> >= 360: <value> mod 360
+     * 
      * @param degrees The initial bearing angle in degrees.
      */
     public Bearing2D(double degrees) {

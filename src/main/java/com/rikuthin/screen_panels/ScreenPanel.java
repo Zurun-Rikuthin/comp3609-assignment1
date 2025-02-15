@@ -12,8 +12,10 @@ public abstract class ScreenPanel extends JPanel {
 
     protected ScreenPanel(GameFrame gameFrame) {
         this.gameFrame = gameFrame;
-        setPreferredSize(new Dimension(GameFrame.FRAME_WIDTH, GameFrame.FRAME_HEIGHT));
-    }
+        Dimension panelSize = new Dimension(GameFrame.FRAME_WIDTH, GameFrame.FRAME_HEIGHT);
 
-    
+        setPreferredSize(panelSize);
+        setMinimumSize(panelSize);
+        setMaximumSize(panelSize);
+    }    
 }

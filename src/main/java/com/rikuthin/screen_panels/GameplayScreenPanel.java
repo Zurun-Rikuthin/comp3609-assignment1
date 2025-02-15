@@ -21,10 +21,11 @@ public final class GameplayScreenPanel extends ScreenPanel {
         bubblePanel = new BubblePanel();
         blasterPanel = new BlasterPanel();
         
+        bubblePanel.setBlasterPanel(blasterPanel);
+
         add(statusPanel);
         add(bubblePanel);
         add(blasterPanel);
-        // bubblePanel.startBubbleMovement();
     }
 
     public StatusPanel getStatusPanel() {
