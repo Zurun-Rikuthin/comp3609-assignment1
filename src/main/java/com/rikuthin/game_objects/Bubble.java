@@ -29,20 +29,20 @@ public class Bubble extends Ellipse2D.Double implements Runnable {
     private final Color colour;
 
     /**
-     * Whether the bubble should start moving.
-     * Set {@code False} by default upon construction.
+     * Whether the bubble should start moving. Set {@code False} by default upon
+     * construction.
      */
     private boolean isMoving;
 
     /**
-     * The direction of movement, represented as a {@link Bearing2D}.
-     * Set to {@code 0} degrees by default during construction.
+     * The direction of movement, represented as a {@link Bearing2D}. Set to
+     * {@code 0} degrees by default during construction.
      */
     private Bearing2D bearing;
 
     /**
-     * The speed of the bubble's movement in pixels per tick.
-     * * Set to {@code 0} degrees by default during construction.
+     * The speed of the bubble's movement in pixels per tick. * Set to {@code 0}
+     * degrees by default during construction.
      */
     private double pixelsPerTick;
 
@@ -132,27 +132,31 @@ public class Bubble extends Ellipse2D.Double implements Runnable {
         }
 
         double radians = Math.toRadians(bearing.getDegrees());
-        double dx = pixelsPerTick * Math.cos(radians);
-        double dy = pixelsPerTick * Math.sin(radians);
-
-        x += dx;
-        y += dy;
+        x += pixelsPerTick * Math.cos(radians);
+        y += pixelsPerTick * Math.sin(radians);
 
         Dimension panelSize = panel.getSize();
 
         // Bounce off left/right edges
-        if (x < 0 || x + width > panelSize.width) {
-            x = Math.clamp(x, 0, panelSize.width - width);
+        if (x < 0) {
+            x = 0;
+            bearing.setDegrees(180 - bearing.getDegrees()); // Reverse X direction
+        } else if (x + width > panelSize.width) {
+            x = panelSize.width - width;
             bearing.setDegrees(180 - bearing.getDegrees()); // Reverse X direction
         }
 
         // Bounce off top/bottom edges
-        if (y < 0 || y + height > panelSize.height) {
-            y = Math.clamp(y, 0, panelSize.height - height);
+        if (y < 0) {
+            y = 0;
+            bearing.setDegrees(360 - bearing.getDegrees()); // Reverse Y direction
+        } else if (y + height > panelSize.height) {
+            y = panelSize.height - height;
             bearing.setDegrees(360 - bearing.getDegrees()); // Reverse Y direction
         }
 
-        panel.repaint();
+        // Repaint the panel on the EDT to ensure thread safety
+        javax.swing.SwingUtilities.invokeLater(panel::repaint);
     }
 
     /**

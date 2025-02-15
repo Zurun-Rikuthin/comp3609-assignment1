@@ -24,6 +24,7 @@ public final class GameplayScreenPanel extends ScreenPanel {
         add(statusPanel);
         add(bubblePanel);
         add(blasterPanel);
+        // bubblePanel.startBubbleMovement();
     }
 
     public StatusPanel getStatusPanel() {
