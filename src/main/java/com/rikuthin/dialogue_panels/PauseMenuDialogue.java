@@ -2,6 +2,7 @@ package com.rikuthin.dialogue_panels;
 
 import java.awt.Component;
 import java.awt.Dialog;
+import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
@@ -25,23 +26,26 @@ public class PauseMenuDialogue extends Dialog {
 
     public PauseMenuDialogue(GameFrame gameFrame, Runnable onResumeCallback) {
         super(gameFrame, "Pause Menu", Dialog.ModalityType.APPLICATION_MODAL);
-        setSize(160, 260); // Example size of dialog
+        setSize(200, 260); // Example size of dialog
         setLocationRelativeTo(gameFrame);
         setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
 
+        Font menuFont = new Font(GameFrame.BODY_TYPEFACE, Font.PLAIN, 8);
+
         menuLabel = new JLabel("PAUSE");
+        menuLabel.setFont(menuFont);
         menuLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
 
-        resumeButton = createButton("RESUME", 80, 40, true, this::onResume);
+        resumeButton = createButton("RESUME", menuFont, 100, 30, true, this::onResume);
         resumeButton.setAlignmentX(Component.CENTER_ALIGNMENT);
 
-        settingsButton = createButton("SETTINGS", 80, 40, false, this::onSettings);
+        settingsButton = createButton("SETTINGS", menuFont, 100, 30, false, this::onSettings);
         settingsButton.setAlignmentX(Component.CENTER_ALIGNMENT);
 
-        mainMenuButton = createButton("MAIN MENU", 80, 40, false, this::onMainMenu);
+        mainMenuButton = createButton("MAIN MENU", menuFont, 100, 30, false, this::onMainMenu);
         mainMenuButton.setAlignmentX(Component.CENTER_ALIGNMENT);
 
-        quitGameButton = createButton("QUIT GAME", 80, 40, true, this::onQuitGame);
+        quitGameButton = createButton("QUIT GAME", menuFont, 100, 30, true, this::onQuitGame);
         quitGameButton.setAlignmentX(Component.CENTER_ALIGNMENT);
 
         add(Box.createVerticalStrut(20));

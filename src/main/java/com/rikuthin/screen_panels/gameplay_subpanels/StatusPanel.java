@@ -37,7 +37,9 @@ public final class StatusPanel extends JPanel {
         score = 0;
         elapsedSeconds = 0;
 
-        pauseMenuButton = createButton("PAUSE", 100, 40, true, this::onPause);
+        Font buttonFont = new Font(GameFrame.BODY_TYPEFACE, Font.PLAIN, 16);
+
+        pauseMenuButton = createButton("PAUSE", buttonFont, 100, 40, true, this::onPause);
         scoreLabel = createStatusLabel();
         timerLabel = createStatusLabel();
 

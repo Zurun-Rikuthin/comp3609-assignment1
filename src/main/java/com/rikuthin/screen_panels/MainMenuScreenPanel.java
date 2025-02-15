@@ -50,11 +50,12 @@ public class MainMenuScreenPanel extends ScreenPanel {
         buttonPanel.setLayout(new BoxLayout(buttonPanel, BoxLayout.Y_AXIS));
         buttonPanel.setOpaque(false);
 
-        JButton startGameButton = createButton("START GAME", 180, 40, true, this::onStartGame);
-        JButton howToPlayButton = createButton("HOW TO PLAY", 180, 40, false, this::onHowToPlay);
-        JButton settingsMenuButton = createButton("SETTINGS", 180, 40, false, this::onSettings);
-        JButton highscoresListButton = createButton("HIGHSCORES", 180, 40, false, this::onHighscores);
-        JButton quitGameButton = createButton("QUIT GAME", 180, 40, true, this::onQuitGame);
+        Font buttonFont = new Font(GameFrame.BODY_TYPEFACE, Font.PLAIN, 16);
+        JButton startGameButton = createButton("START GAME", buttonFont, 180, 40, true, this::onStartGame);
+        JButton howToPlayButton = createButton("HOW TO PLAY", buttonFont, 180, 40, false, this::onHowToPlay);
+        JButton settingsMenuButton = createButton("SETTINGS", buttonFont, 180, 40, false, this::onSettings);
+        JButton highscoresListButton = createButton("HIGHSCORES", buttonFont, 180, 40, false, this::onHighscores);
+        JButton quitGameButton = createButton("QUIT GAME", buttonFont, 180, 40, true, this::onQuitGame);
 
         buttonPanel.add(Box.createVerticalStrut(100));
         buttonPanel.add(startGameButton);
