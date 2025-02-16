@@ -1,0 +1,3 @@
+Text file to store settings data.
+Made this early on and didn't have time to implement it in build.
+Maybe for the next assignment.

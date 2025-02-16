@@ -7,21 +7,32 @@ import javax.swing.WindowConstants;
 
 import com.rikuthin.screen_panels.GameplayScreenPanel;
 import com.rikuthin.screen_panels.MainMenuScreenPanel;
-import com.rikuthin.screen_panels.gameplay_subpanels.StatusPanel;
 
 public final class GameFrame extends JFrame {
+
+    /**
+     * Enum representing the different panel names used in the game.
+     */
+    public enum PanelName {
+        MAIN_MENU,
+        GAMEPLAY
+    }
 
     public static final int FRAME_WIDTH = 600;
     public static final int FRAME_HEIGHT = 800;
 
-    public static final String MAIN_MENU_PANEL_NAME = "Main Menu";
-    public static final String GAMEPLAY_PANEL_NAME = "Gameplay";
     public static final String BODY_TYPEFACE = "Cooper Black";
 
+    private final GameManager gameManager;
     private final MainMenuScreenPanel mainMenuScreenPanel;
     private final GameplayScreenPanel gameplayScreenPanel;
     private final CardLayout cardLayout;
 
+    /**
+     * Constructor to initialize the game frame, set the size, title, and add
+     * the main menu and gameplay panels. Also initializes the GameManager
+     * instance and sets the blaster and bubble panels.
+     */
     public GameFrame() {
         setTitle("Untitled Bubble Shooter");
         setSize(FRAME_WIDTH, FRAME_HEIGHT);
@@ -34,30 +45,73 @@ public final class GameFrame extends JFrame {
         mainMenuScreenPanel = new MainMenuScreenPanel(this);
         gameplayScreenPanel = new GameplayScreenPanel(this);
 
-        add(mainMenuScreenPanel, MAIN_MENU_PANEL_NAME);
-        add(gameplayScreenPanel, GAMEPLAY_PANEL_NAME);
+        // Initialize GameManager
+        gameManager = GameManager.getInstance();
+        gameManager.setBlasterPanel(gameplayScreenPanel.getBlasterPanel());
+        gameManager.setBubblePanel(gameplayScreenPanel.getBubblePanel());
 
-        switchToPanel(MAIN_MENU_PANEL_NAME);
+        add(mainMenuScreenPanel, PanelName.MAIN_MENU.name());
+        add(gameplayScreenPanel, PanelName.GAMEPLAY.name());
+
+        // Set the initial panel to the main menu
+        switchToPanel(PanelName.MAIN_MENU);
         setVisible(true);
     }
 
-    public void switchToPanel(final String panelName) {
-        cardLayout.show(getContentPane(), panelName);
+    /**
+     * Switches the view to the specified panel.
+     *
+     * @param panelName The panel to switch to (either MAIN_MENU or GAMEPLAY).
+     */
+    public void switchToPanel(final PanelName panelName) {
+        if (panelName != null) {
+            cardLayout.show(getContentPane(), panelName.name());
+        } else {
+            System.err.println("Warning: Attempted to switch to an invalid panel: " + panelName);
+        }
     }
 
+    /**
+     * Returns the {@link MainMenuScreenPanel} associated with this game frame.
+     *
+     * @return The main menu screen panel.
+     */
+    public MainMenuScreenPanel getMainMenuScreenPanel() {
+        return mainMenuScreenPanel;
+    }
+
+    /**
+     * Returns the {@link GameplayScreenPanel} associated with this game frame.
+     *
+     * @return The gameplay screen panel.
+     */
+    public GameplayScreenPanel getGameplayScreenPanel() {
+        return gameplayScreenPanel;
+    }
+
+    /**
+     * Checks if the gameplay panel is currently active (visible).
+     *
+     * @return True if the gameplay screen is visible, otherwise false.
+     */
     public boolean isGameplayActive() {
         return gameplayScreenPanel.isVisible();
     }
 
+    /**
+     * Checks if the main menu panel is currently active (visible).
+     *
+     * @return True if the main menu screen is visible, otherwise false.
+     */
     public boolean isMainMenuActive() {
         return mainMenuScreenPanel.isVisible();
     }
 
-    public StatusPanel getStatusPanel() {
-        if (isGameplayActive()) {
-            return gameplayScreenPanel.getStatusPanel();
-        }
-        return null;
+    /**
+     * Starts the game by initializing the game manager and setting up the
+     * gameplay.
+     */
+    public void startGame() {
+        gameManager.startGame();
     }
-    
 }

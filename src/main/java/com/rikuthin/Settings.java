@@ -6,6 +6,10 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.Properties;
 
+/**
+ * Made this early on and didn't have time to implement it in build.
+ * Maybe for the next assignment
+ */
 public class Settings {
 
     private static final String SETTINGS_FILE_PATH = "settings.txt";
@@ -62,7 +66,6 @@ public class Settings {
     //     String volumeStr = properties.getProperty("volume", "50");  // default volume to 50
     //     return Integer.parseInt(volumeStr);
     // }
-
     // public void setVolume(int volume) {
     //     setSetting("volume", String.valueOf(volume));
     // }

@@ -15,12 +15,13 @@ public final class GameplayScreenPanel extends ScreenPanel {
 
     public GameplayScreenPanel(GameFrame gameFrame) {
         super(gameFrame);
+
         setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
 
         statusPanel = new StatusPanel();
         bubblePanel = new BubblePanel();
         blasterPanel = new BlasterPanel();
-        
+
         add(statusPanel);
         add(bubblePanel);
         add(blasterPanel);
