@@ -1,4 +1,4 @@
-package com.rikuthin;
+package com.rikuthin.utility;
 
 import java.awt.Color;
 import java.util.concurrent.ThreadLocalRandom;
@@ -12,6 +12,9 @@ public enum BubbleColour {
     ULTRAVIOLET(new Color(77, 83, 130)),
     MAUVINE_PURPLE(new Color(144, 4, 159));
 
+    private static final BubbleColour[] VALUES = values(); // Cache for efficiency
+    private static final int SIZE = VALUES.length;
+
     private final Color colour;
 
     BubbleColour(Color colour) {
@@ -22,8 +25,11 @@ public enum BubbleColour {
         return colour;
     }
 
+    public static BubbleColour getRandomBubbleColour() {
+        return VALUES[ThreadLocalRandom.current().nextInt(SIZE)];
+    }
+
     public static Color getRandomColour() {
-        BubbleColour[] values = BubbleColour.values();
-        return values[ThreadLocalRandom.current().nextInt(values.length)].getColour();
+        return getRandomBubbleColour().getColour();
     }
 }

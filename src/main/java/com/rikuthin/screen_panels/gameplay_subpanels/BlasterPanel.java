@@ -5,32 +5,27 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
-import java.awt.Point;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
 
 import javax.swing.BoxLayout;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
-import com.rikuthin.BubbleColour;
 import com.rikuthin.GameFrame;
+import com.rikuthin.GameManager;
 import com.rikuthin.game_objects.Blaster;
 
 public class BlasterPanel extends JPanel {
 
+    private final GameManager gameManager;
     private final JLabel remainingBubblesCounterLabel;
     private final JPanel remainingBubblesPanel;
     private final JPanel heldBubblesPanel;
-    private final JLabel mouseCoordsLabel;
     private final Blaster blaster;
-    private final BubblePanel bubblePanel;
 
-    private int remainingBubbles;
+    private BubblePanel bubblePanel;
 
-    public BlasterPanel(final BubblePanel bubblePanel) {
-        this.bubblePanel = bubblePanel;
-        remainingBubbles = 10;
+    public BlasterPanel(GameManager gameManager) {
+        this.gameManager = gameManager;
 
         setBackground(new Color(159, 131, 131));
         setPreferredSize(new Dimension(GameFrame.FRAME_WIDTH, 110));
@@ -44,9 +39,6 @@ public class BlasterPanel extends JPanel {
         heldBubblesPanel = new JPanel();
         add(remainingBubblesCounterLabel);
 
-        mouseCoordsLabel = new JLabel("Mouse: ()");
-        add(mouseCoordsLabel);
-
         // Blaster configuration
         final int shotSize = 30;
         final double shotSpeed = 10;
@@ -58,31 +50,17 @@ public class BlasterPanel extends JPanel {
                 blasterY,
                 shotSize,
                 shotSpeed,
-                new Color(2, 52, 54),
-                bubblePanel
+                new Color(2, 52, 54)
         );
-
-        // Add mouse listener to shoot the blaster when clicked
-        addMouseListener(new MouseAdapter() {
-            @Override
-            public void mouseClicked(MouseEvent e) {
-                if (bubblePanel != null) {
-                    Point target = new Point(e.getX(), e.getY());
-                    blaster.shootBubble(target, BubbleColour.getRandomColour());
-                    remainingBubbles--;
-                    updateRemainingBubblesCounter();
-                    repaint();
-                }
-            }
-        });
     }
 
-    private void updateRemainingBubblesCounter() {
-        remainingBubblesCounterLabel.setText(String.format("Remaining Bubbles: %d", remainingBubbles));
+    public Blaster getBlaster() {
+        return blaster;
     }
 
-    public void updateMouseCoords(int x, int y) {
-        mouseCoordsLabel.setText(String.format("Mouse: (%d, %d)", x, y));
+
+    public void updateRemainingBubblesCounter(final int value) {
+        remainingBubblesCounterLabel.setText(String.format("Remaining Bubbles: %d", value));
     }
 
     @Override

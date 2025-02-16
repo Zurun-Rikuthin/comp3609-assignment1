@@ -3,6 +3,7 @@ package com.rikuthin;
 import javax.swing.SwingUtilities;
 
 public class App {
+
     /**
      * How often the various threads should update themselves (milliseconds)
      */

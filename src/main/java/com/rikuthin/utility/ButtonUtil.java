@@ -1,4 +1,4 @@
-package com.rikuthin;
+package com.rikuthin.utility;
 
 import java.awt.Dimension;
 import java.awt.Font;

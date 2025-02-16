@@ -12,8 +12,8 @@ import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JLabel;
 
-import static com.rikuthin.ButtonUtil.createButton;
 import com.rikuthin.GameFrame;
+import static com.rikuthin.utility.ButtonUtil.createButton;
 
 public class PauseMenuDialogue extends Dialog {
 
@@ -82,7 +82,6 @@ public class PauseMenuDialogue extends Dialog {
         System.out.println("Main Menu button clicked.");
     }
 
-    @SuppressWarnings(value = "unused")
     private void onQuitGame(ActionEvent e) {
         System.exit(0);
     }

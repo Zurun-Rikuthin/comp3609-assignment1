@@ -7,17 +7,20 @@ import javax.swing.WindowConstants;
 
 import com.rikuthin.screen_panels.GameplayScreenPanel;
 import com.rikuthin.screen_panels.MainMenuScreenPanel;
-import com.rikuthin.screen_panels.gameplay_subpanels.StatusPanel;
 
 public final class GameFrame extends JFrame {
+
+    public enum PanelName {
+        MAIN_MENU,
+        GAMEPLAY
+    }
 
     public static final int FRAME_WIDTH = 600;
     public static final int FRAME_HEIGHT = 800;
 
-    public static final String MAIN_MENU_PANEL_NAME = "Main Menu";
-    public static final String GAMEPLAY_PANEL_NAME = "Gameplay";
     public static final String BODY_TYPEFACE = "Cooper Black";
 
+    private final GameManager gameManager;
     private final MainMenuScreenPanel mainMenuScreenPanel;
     private final GameplayScreenPanel gameplayScreenPanel;
     private final CardLayout cardLayout;
@@ -34,15 +37,31 @@ public final class GameFrame extends JFrame {
         mainMenuScreenPanel = new MainMenuScreenPanel(this);
         gameplayScreenPanel = new GameplayScreenPanel(this);
 
-        add(mainMenuScreenPanel, MAIN_MENU_PANEL_NAME);
-        add(gameplayScreenPanel, GAMEPLAY_PANEL_NAME);
+        gameManager = GameManager.getInstance();
+        gameManager.setBlasterPanel(gameplayScreenPanel.getBlasterPanel());
+        gameManager.setBubblePanel(gameplayScreenPanel.getBubblePanel());
 
-        switchToPanel(MAIN_MENU_PANEL_NAME);
+        add(mainMenuScreenPanel, PanelName.MAIN_MENU.name());
+        add(gameplayScreenPanel, PanelName.GAMEPLAY.name());
+
+        switchToPanel(PanelName.MAIN_MENU);
         setVisible(true);
     }
 
-    public void switchToPanel(final String panelName) {
-        cardLayout.show(getContentPane(), panelName);
+    public void switchToPanel(final PanelName panelName) {
+        if (panelName != null) {
+            cardLayout.show(getContentPane(), panelName.name());
+        } else {
+            System.err.println("Warning: Attempted to switch to an invalid panel: " + panelName);
+        }
+    }
+
+    public MainMenuScreenPanel getMainMenuScreenPanel() {
+        return mainMenuScreenPanel;
+    }
+
+    public GameplayScreenPanel getGameplayScreenPanel() {
+        return gameplayScreenPanel;
     }
 
     public boolean isGameplayActive() {
@@ -53,11 +72,7 @@ public final class GameFrame extends JFrame {
         return mainMenuScreenPanel.isVisible();
     }
 
-    public StatusPanel getStatusPanel() {
-        if (isGameplayActive()) {
-            return gameplayScreenPanel.getStatusPanel();
-        }
-        return null;
+    public void startGame() {
+        gameManager.startGame();
     }
-    
 }

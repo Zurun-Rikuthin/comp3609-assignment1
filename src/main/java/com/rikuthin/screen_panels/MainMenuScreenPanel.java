@@ -14,21 +14,25 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.SwingConstants;
 
-import static com.rikuthin.ButtonUtil.createButton;
 import com.rikuthin.GameFrame;
-import static com.rikuthin.GameFrame.GAMEPLAY_PANEL_NAME;
+import com.rikuthin.GameFrame.PanelName;
+import com.rikuthin.GameManager;
+import static com.rikuthin.utility.ButtonUtil.createButton;
 
 public class MainMenuScreenPanel extends ScreenPanel {
 
+    private final GameManager gameManager;
     private final JLabel titleLabel;
     private final JPanel buttonPanel;
     private final JPanel centreWrapper;
     private final JPanel titlePanel;
-    // private final JPanel muteButtonPanel;
+    
+    // TODO
     // private final JToggleButton muteMusicButton;
 
     public MainMenuScreenPanel(GameFrame gameFrame) {
         super(gameFrame);
+        gameManager = GameManager.getInstance();
         setBackground(new Color(87, 73, 100));
         setLayout(new BorderLayout());
 
@@ -58,6 +62,7 @@ public class MainMenuScreenPanel extends ScreenPanel {
         final ActionListener[] actions = {this::onStartGame, this::onHowToPlay, this::onSettings, this::onHighscores, this::onQuitGame};
 
         for (int i = 0; i < labels.length; i++) {
+            // Only enable START GAME and QUIT GAME for now
             JButton button = createButton(labels[i], buttonFont, 180, 40, i != 1 && i != 2 && i != 3, actions[i]);
             buttonPanel.add(button);
             buttonPanel.add(Box.createVerticalStrut(10));
@@ -78,32 +83,32 @@ public class MainMenuScreenPanel extends ScreenPanel {
         // add(muteButtonPanel, BorderLayout.NORTH);  // Add to the west (left side)
     }
 
-    @SuppressWarnings(value = {"unused"})
-    private void onMuteMusic(ActionEvent e) {
-        System.out.println("Mute Button not implemented");
-    }
+    // TODO
+    // private void onMuteMusic(ActionEvent e) {
+    //     System.out.println("Mute Button not implemented");
+    // }
 
-    @SuppressWarnings(value = {"unused"})
+    
     private void onStartGame(ActionEvent e) {
-        gameFrame.switchToPanel(GAMEPLAY_PANEL_NAME);
+        gameFrame.switchToPanel(PanelName.GAMEPLAY);
+        gameManager.startGame();
     }
 
-    @SuppressWarnings(value = {"unused"})
+    // TODO
     private void onHowToPlay(ActionEvent e) {
         System.out.println("How to Play Screen not implemented");
     }
 
-    @SuppressWarnings(value = {"unused"})
+    // TODO
     private void onSettings(ActionEvent e) {
         System.out.println("Settings Menu not implemented");
     }
 
-    @SuppressWarnings(value = {"unused"})
+    // TODO
     private void onHighscores(ActionEvent e) {
         System.out.println("High Scores screen not implemented");
     }
 
-    @SuppressWarnings(value = {"unused"})
     private void onQuitGame(ActionEvent e) {
         System.exit(0);
     }

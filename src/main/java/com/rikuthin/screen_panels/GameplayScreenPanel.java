@@ -3,6 +3,7 @@ package com.rikuthin.screen_panels;
 import javax.swing.BoxLayout;
 
 import com.rikuthin.GameFrame;
+import com.rikuthin.GameManager;
 import com.rikuthin.screen_panels.gameplay_subpanels.BlasterPanel;
 import com.rikuthin.screen_panels.gameplay_subpanels.BubblePanel;
 import com.rikuthin.screen_panels.gameplay_subpanels.StatusPanel;
@@ -15,13 +16,12 @@ public final class GameplayScreenPanel extends ScreenPanel {
 
     public GameplayScreenPanel(GameFrame gameFrame) {
         super(gameFrame);
+
         setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
 
         statusPanel = new StatusPanel();
-        bubblePanel = new BubblePanel();
-        blasterPanel = new BlasterPanel(bubblePanel);
-        
-        bubblePanel.setBlasterPanel(blasterPanel);
+        bubblePanel = new BubblePanel(GameManager.getInstance());
+        blasterPanel = new BlasterPanel(GameManager.getInstance());
 
         add(statusPanel);
         add(bubblePanel);

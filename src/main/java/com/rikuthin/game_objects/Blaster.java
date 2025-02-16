@@ -6,8 +6,8 @@ import java.awt.Point;
 import java.awt.geom.Rectangle2D;
 import java.util.Objects;
 
-import com.rikuthin.Bearing2D;
-import com.rikuthin.screen_panels.gameplay_subpanels.BubblePanel;
+import com.rikuthin.GameManager;
+import com.rikuthin.utility.Bearing2D;
 
 /**
  * Represents a blaster that moves within a JPanel. The blaster moves along a
@@ -16,10 +16,7 @@ import com.rikuthin.screen_panels.gameplay_subpanels.BubblePanel;
  */
 public class Blaster extends Rectangle2D.Double implements Runnable {
 
-    /**
-     * The panel into which which the blaster shoots. *
-     */
-    private final BubblePanel bubblePanel;
+    private final GameManager gameManager;
 
     /**
      * The colour of the blaster
@@ -53,12 +50,11 @@ public class Blaster extends Rectangle2D.Double implements Runnable {
      * @param width The width of the blaster.
      * @param height The height of the blaster.
      * @param colour The colour of the blaster.
-     * @param bubblePanel The BubblePanel into which the blaster shoots.
      */
-    public Blaster(final int x, final int y, final int shotSize, final double shotSpeed, final Color colour, final BubblePanel bubblePanel) {
+    public Blaster(final int x, final int y, final int shotSize, final double shotSpeed, final Color colour) {
         super(x, y, shotSize, shotSize);
+        gameManager = GameManager.getInstance();
         this.colour = colour;
-        this.bubblePanel = bubblePanel;
         bearing = new Bearing2D(0);
         this.shotSize = shotSize;
         this.shotSpeed = shotSpeed;
@@ -194,7 +190,7 @@ public class Blaster extends Rectangle2D.Double implements Runnable {
         int startY = (int) Math.round(getCenterY());
 
         // Create the bubble
-        Bubble bubble = new Bubble(startX, startY, shotSize, bubbleColour, bubblePanel);
+        Bubble bubble = new Bubble(startX, startY, shotSize, bubbleColour, gameManager.getBubblePanel());
 
         // Set the bubble's direction using the given target
         bubble.setBearing(new Bearing2D(startX, startY, target.x, target.y));
@@ -202,6 +198,8 @@ public class Blaster extends Rectangle2D.Double implements Runnable {
         // Set speed and movement
         bubble.setSpeed(shotSpeed);
         bubble.setIsMoving(true);
+
+        new Thread(bubble).start();
 
         return bubble;
     }
