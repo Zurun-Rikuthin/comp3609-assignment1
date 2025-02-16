@@ -16,6 +16,7 @@ import javax.swing.SwingConstants;
 
 import com.rikuthin.GameFrame;
 import static com.rikuthin.GameFrame.GAMEPLAY_PANEL_NAME;
+import com.rikuthin.GameManager;
 import static com.rikuthin.utility.ButtonUtil.createButton;
 
 public class MainMenuScreenPanel extends ScreenPanel {
@@ -27,8 +28,8 @@ public class MainMenuScreenPanel extends ScreenPanel {
     // private final JPanel muteButtonPanel;
     // private final JToggleButton muteMusicButton;
 
-    public MainMenuScreenPanel(GameFrame gameFrame) {
-        super(gameFrame);
+    public MainMenuScreenPanel(GameFrame gameFrame, GameManager gameManager) {
+        super(gameFrame, gameManager);
         setBackground(new Color(87, 73, 100));
         setLayout(new BorderLayout());
 

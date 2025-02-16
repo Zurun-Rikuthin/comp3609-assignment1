@@ -5,25 +5,19 @@ import java.awt.Point;
 
 import com.rikuthin.game_objects.Blaster;
 import com.rikuthin.game_objects.Bubble;
-import com.rikuthin.screen_panels.GameplayScreenPanel;
 import com.rikuthin.screen_panels.gameplay_subpanels.BlasterPanel;
 import com.rikuthin.screen_panels.gameplay_subpanels.BubblePanel;
 import com.rikuthin.utility.BubbleColour;
 
 public class GameManager {
-
-    private final GameFrame gameFrame;
-    private final GameplayScreenPanel gameplayScreenPanel;
     private final BlasterPanel blasterPanel;
     private final BubblePanel bubblePanel;
 
     private int remainingBubbles;
 
     public GameManager(GameFrame gameFrame) {
-        this.gameFrame = gameFrame;
-        this.gameplayScreenPanel = gameFrame.getGameplayScreenPanel();
-        this.blasterPanel = gameplayScreenPanel.getBlasterPanel();
-        this.bubblePanel = gameplayScreenPanel.getBubblePanel();
+        this.blasterPanel = gameFrame.getGameplayScreenPanel().getBlasterPanel();
+        this.bubblePanel = gameFrame.getGameplayScreenPanel().getBubblePanel();
         this.remainingBubbles = 10;  // Initial number of bubbles
     }
 
@@ -33,7 +27,7 @@ public class GameManager {
     
     public void startGame() {
         // Initialize game state, start game loop, etc.
-        remainingBubbles = 10;
+        remainingBubbles = 50;
         blasterPanel.updateRemainingBubblesCounter(remainingBubbles);
     }
 
