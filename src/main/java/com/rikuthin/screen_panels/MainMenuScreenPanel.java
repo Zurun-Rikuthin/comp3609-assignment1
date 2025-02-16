@@ -5,6 +5,7 @@ import java.awt.Color;
 import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
 import javax.swing.Box;
 import javax.swing.BoxLayout;
@@ -50,23 +51,17 @@ public class MainMenuScreenPanel extends ScreenPanel {
         buttonPanel.setLayout(new BoxLayout(buttonPanel, BoxLayout.Y_AXIS));
         buttonPanel.setOpaque(false);
 
-        Font buttonFont = new Font(GameFrame.BODY_TYPEFACE, Font.PLAIN, 16);
-        JButton startGameButton = createButton("START GAME", buttonFont, 180, 40, true, this::onStartGame);
-        JButton howToPlayButton = createButton("HOW TO PLAY", buttonFont, 180, 40, false, this::onHowToPlay);
-        JButton settingsMenuButton = createButton("SETTINGS", buttonFont, 180, 40, false, this::onSettings);
-        JButton highscoresListButton = createButton("HIGHSCORES", buttonFont, 180, 40, false, this::onHighscores);
-        JButton quitGameButton = createButton("QUIT GAME", buttonFont, 180, 40, true, this::onQuitGame);
-
+        final Font buttonFont = new Font(GameFrame.BODY_TYPEFACE, Font.PLAIN, 16);
         buttonPanel.add(Box.createVerticalStrut(100));
-        buttonPanel.add(startGameButton);
-        buttonPanel.add(Box.createVerticalStrut(10));
-        buttonPanel.add(howToPlayButton);
-        buttonPanel.add(Box.createVerticalStrut(10));
-        buttonPanel.add(settingsMenuButton);
-        buttonPanel.add(Box.createVerticalStrut(10));
-        buttonPanel.add(highscoresListButton);
-        buttonPanel.add(Box.createVerticalStrut(80));
-        buttonPanel.add(quitGameButton);
+
+        final String[] labels = {"START GAME", "HOW TO PLAY", "SETTINGS", "HIGHSCORES", "QUIT GAME"};
+        final ActionListener[] actions = {this::onStartGame, this::onHowToPlay, this::onSettings, this::onHighscores, this::onQuitGame};
+
+        for (int i = 0; i < labels.length; i++) {
+            JButton button = createButton(labels[i], buttonFont, 180, 40, i != 1 && i != 2 && i != 3, actions[i]);
+            buttonPanel.add(button);
+            buttonPanel.add(Box.createVerticalStrut(10));
+        }
 
         centreWrapper = new JPanel(new FlowLayout(FlowLayout.CENTER));  // Centering the buttons more easily
         centreWrapper.setOpaque(false);
@@ -74,6 +69,7 @@ public class MainMenuScreenPanel extends ScreenPanel {
 
         add(centreWrapper, BorderLayout.CENTER);
 
+        // TODO
         // // ----- Mute Button (Top) -----
         // muteButtonPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
         // muteButtonPanel.setOpaque(false);

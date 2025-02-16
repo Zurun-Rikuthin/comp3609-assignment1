@@ -19,7 +19,7 @@ public final class GameplayScreenPanel extends ScreenPanel {
 
         statusPanel = new StatusPanel();
         bubblePanel = new BubblePanel();
-        blasterPanel = new BlasterPanel();
+        blasterPanel = new BlasterPanel(bubblePanel);
         
         bubblePanel.setBlasterPanel(blasterPanel);
 

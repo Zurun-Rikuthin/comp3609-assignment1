@@ -36,7 +36,7 @@ public class PauseMenuDialogue extends Dialog {
         menuLabel.setFont(menuFont);
         menuLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
 
-        resumeButton = createButton("RESUME", menuFont, 100, 30, true, this::onResume);
+        resumeButton = createButton("RESUME", menuFont, 100, 30, true, e -> onResume(onResumeCallback));
         resumeButton.setAlignmentX(Component.CENTER_ALIGNMENT);
 
         settingsButton = createButton("SETTINGS", menuFont, 100, 30, false, this::onSettings);
@@ -69,19 +69,17 @@ public class PauseMenuDialogue extends Dialog {
         });
     }
 
-    @SuppressWarnings(value = "unused")
-    private void onResume(ActionEvent e) {
-
+    private void onResume(Runnable onResumeCallback) {
+        onResumeCallback.run();
+        setVisible(false);
     }
 
-    @SuppressWarnings(value = "unused")
     private void onSettings(ActionEvent e) {
-
+        System.out.println("Settings button clicked.");
     }
 
-    @SuppressWarnings(value = "unused")
     private void onMainMenu(ActionEvent e) {
-
+        System.out.println("Main Menu button clicked.");
     }
 
     @SuppressWarnings(value = "unused")

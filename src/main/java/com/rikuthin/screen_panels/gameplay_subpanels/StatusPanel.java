@@ -70,6 +70,11 @@ public final class StatusPanel extends JPanel {
         this.score = score;
     }
 
+    private void onTimerTick(ActionEvent e) {
+        elapsedSeconds++;
+        updateTimer(elapsedSeconds);
+    }
+
     private void updateTimer(final int elapsedSeconds) {
         int minutes = elapsedSeconds / 60;
         int seconds = elapsedSeconds % 60;
@@ -78,15 +83,12 @@ public final class StatusPanel extends JPanel {
         this.elapsedSeconds = elapsedSeconds;
     }
 
-    private void onTimerTick(ActionEvent e) {
-        elapsedSeconds++;
-        updateTimer(elapsedSeconds);
-    }
-
-    @SuppressWarnings(value = {"unused"})
     private void onPause(ActionEvent e) {
         gameTimer.stop();
+        showPauseMenu();
+    }
 
+    private void showPauseMenu() {
         PauseMenuDialogue pauseMenuDialogue = new PauseMenuDialogue(
                 (GameFrame) getTopLevelAncestor(),
                 this::onResume
@@ -106,5 +108,5 @@ public final class StatusPanel extends JPanel {
 
         return label;
     }
-    
+
 }

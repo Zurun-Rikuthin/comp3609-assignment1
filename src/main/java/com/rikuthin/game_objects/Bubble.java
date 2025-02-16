@@ -42,9 +42,9 @@ public class Bubble extends Ellipse2D.Double implements Runnable {
 
     /**
      * The speed of the bubble's movement in pixels per tick. * Set to {@code 0}
-     * degrees by default during construction.
+     * by default during construction.
      */
-    private double pixelsPerTick;
+    private double speed;
 
     /**
      * Constructs a new Bubble.
@@ -61,7 +61,7 @@ public class Bubble extends Ellipse2D.Double implements Runnable {
         this.colour = colour;
         isMoving = false;
         bearing = new Bearing2D(0);
-        pixelsPerTick = 0;
+        speed = 0;
     }
 
     /**
@@ -69,7 +69,7 @@ public class Bubble extends Ellipse2D.Double implements Runnable {
      *
      * @return {@code true} if the bubble is moving, otherwise {@code false}.
      */
-    public boolean getIsMoving() {
+    public boolean isMoving() {
         return isMoving;
     }
 
@@ -88,8 +88,8 @@ public class Bubble extends Ellipse2D.Double implements Runnable {
      *
      * @return The speed in pixels per tick.
      */
-    public double getPixelsPerTick() {
-        return pixelsPerTick;
+    public double getSpeed() {
+        return speed;
     }
 
     /**
@@ -117,61 +117,56 @@ public class Bubble extends Ellipse2D.Double implements Runnable {
      *
      * @param pixelsPerTick The new speed in pixels per tick.
      */
-    public void setPixelsPerTick(double pixelsPerTick) {
-        this.pixelsPerTick = Math.abs(pixelsPerTick);
+    public void setSpeed(double speed) {
+        this.speed = Math.abs(speed);
     }
 
     /**
      * Moves the bubble according to its bearing (angle in degrees) and speed
-     * (pixels per tick). If the bubble reaches the edges of the panel, it
-     * bounces off and changes direction.
+     * (pixels per tick).
+     * 
+     * If the bubble hits the side edges of the panel, it bounces off and changes direction.
+     * If the bubble hits the top of the panel or collides with another bubble, it stops moving.
      */
     public void move() {
         if (!panel.isVisible()) {
             return;
         }
 
-        double radians = Math.toRadians(bearing.getDegrees());
-        x += pixelsPerTick * Math.cos(radians);
-        y -= pixelsPerTick * Math.sin(radians); // Inverted because +y is downward in Swing compared to normal Cartesian +y
+        // https://gis.stackexchange.com/questions/187286/how-to-convert-double-bearing-into-x-and-y-coordinate
+
+        final double radians = Math.toRadians(bearing.getDegrees());
+        final double newX = x + speed * Math.cos(radians);
+        final double newY = y - speed * Math.sin(radians); // Inverted because +y is downward in Swing compared to normal Cartesian +y
 
         Dimension panelSize = panel.getSize();
 
         // Bounce off left/right edges
-        if (x < 0) {
+        if (newX < 0) {
             x = 0;
             bearing.setDegrees(180 - bearing.getDegrees()); // Reverse X direction
-        } else if (x + width > panelSize.width) {
+        } else if (newX + width > panelSize.width) {
             x = panelSize.width - width;
             bearing.setDegrees(180 - bearing.getDegrees()); // Reverse X direction
         }
 
-        // Bounce off top/bottom edges
-        if (y < 0) {
+        // Stop moving at top edge
+        if (newY < 0) {
             y = 0;
-            bearing.setDegrees(360 - bearing.getDegrees()); // Reverse Y direction
-        } else if (y + height > panelSize.height) {
-            y = panelSize.height - height;
-            bearing.setDegrees(360 - bearing.getDegrees()); // Reverse Y direction
+            isMoving = false;
         }
+
+        // Bounce off top/bottom edges
+        // if (y < 0) {
+        //     y = 0;
+        //     bearing.setDegrees(360 - bearing.getDegrees()); // Reverse Y direction
+        // } else if (y + height > panelSize.height) {
+        //     y = panelSize.height - height;
+        //     bearing.setDegrees(360 - bearing.getDegrees()); // Reverse Y direction
+        // }
 
         // Repaint the panel on the EDT to ensure thread safety
         javax.swing.SwingUtilities.invokeLater(panel::repaint);
-    }
-
-    /**
-     * Sets a new position for the bubble if it's within the panel boundaries.
-     *
-     * @param x The new x-coordinate.
-     * @param y The new y-coordinate.
-     */
-    public void setLocation(final int x, final int y) {
-        Dimension panelSize = panel.getSize();
-        if (x >= 0 && x + width < panelSize.width
-                && y >= 0 && y + height < panelSize.height) {
-            this.x = x;
-            this.y = y;
-        }
     }
 
     /**
@@ -195,7 +190,7 @@ public class Bubble extends Ellipse2D.Double implements Runnable {
         while (isMoving) {
             move();
             try {
-                Thread.sleep(App.tickSpeedMs); // Controls speed
+                Thread.sleep(App.TICK_SPEED_MS); // Controls speed
             } catch (InterruptedException e) {
                 Thread.currentThread().interrupt(); // Restore interrupted state
                 break;
@@ -227,7 +222,7 @@ public class Bubble extends Ellipse2D.Double implements Runnable {
                 && colour.equals(other.colour)
                 && isMoving == other.isMoving
                 && bearing.equals(other.bearing)
-                && java.lang.Double.compare(pixelsPerTick, other.pixelsPerTick) == 0;
+                && java.lang.Double.compare(speed, other.speed) == 0;
 
     }
 
@@ -239,7 +234,7 @@ public class Bubble extends Ellipse2D.Double implements Runnable {
      */
     @Override
     public int hashCode() {
-        return Objects.hash(x, y, width, colour, isMoving, bearing, pixelsPerTick);
+        return Objects.hash(x, y, width, colour, isMoving, bearing, speed);
     }
 
 }

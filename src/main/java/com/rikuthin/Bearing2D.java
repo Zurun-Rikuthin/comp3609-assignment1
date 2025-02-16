@@ -34,7 +34,7 @@ public final class Bearing2D {
      * @param endY   The y-coordinate of the ending point.
      */
     public Bearing2D(final int startX, final int startY, final int endX, final int endY) {
-        calculateBearing(startX, startY, endX, endY);
+        this.degrees = normalize(Math.toDegrees(Math.atan2(endY - startY, endX - startX)));
     }
 
     /**
@@ -54,25 +54,6 @@ public final class Bearing2D {
      */
     public void setDegrees(double degrees) {
         this.degrees = normalize(degrees);
-    }
-
-    /**
-     * Calculates and sets the bearing angle between two points.
-     * The angle is measured in degrees, relative to the positive x-axis.
-     * 
-     * @param startX The x-coordinate of the starting point.
-     * @param startY The y-coordinate of the starting point.
-     * @param endX   The x-coordinate of the ending point.
-     * @param endY   The y-coordinate of the ending point.
-     */
-    public void calculateBearing(final int startX, final int startY, final int endX, final int endY) {
-        int deltaX = endX - startX;
-        int deltaY = endY - startY;
-
-        double bearingRad = Math.atan2(deltaY, deltaX);
-        double bearingDeg = Math.toDegrees(bearingRad);
-
-        degrees = normalize(bearingDeg);
     }
 
     /**
@@ -103,7 +84,7 @@ public final class Bearing2D {
         }
 
         Bearing2D b = (Bearing2D) obj;
-        return b.getDegrees() == degrees;
+        return Double.compare(degrees, b.getDegrees()) == 0;
     }
 
     /**

@@ -6,6 +6,9 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.Properties;
 
+/**
+ * Unused in this build
+ */
 public class Settings {
 
     private static final String SETTINGS_FILE_PATH = "settings.txt";
