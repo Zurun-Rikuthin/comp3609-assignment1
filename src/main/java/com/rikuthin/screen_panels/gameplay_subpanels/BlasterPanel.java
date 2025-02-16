@@ -20,7 +20,6 @@ public class BlasterPanel extends JPanel {
     private final JLabel remainingBubblesCounterLabel;
     private final JPanel remainingBubblesPanel;
     private final JPanel heldBubblesPanel;
-    private final JLabel mouseCoordsLabel;
     private final Blaster blaster;
 
     private BubblePanel bubblePanel;
@@ -40,9 +39,6 @@ public class BlasterPanel extends JPanel {
         heldBubblesPanel = new JPanel();
         add(remainingBubblesCounterLabel);
 
-        mouseCoordsLabel = new JLabel("Mouse: ()");
-        add(mouseCoordsLabel);
-
         // Blaster configuration
         final int shotSize = 30;
         final double shotSpeed = 10;
@@ -54,8 +50,7 @@ public class BlasterPanel extends JPanel {
                 blasterY,
                 shotSize,
                 shotSpeed,
-                new Color(2, 52, 54),
-                bubblePanel
+                new Color(2, 52, 54)
         );
     }
 
@@ -68,18 +63,10 @@ public class BlasterPanel extends JPanel {
         remainingBubblesCounterLabel.setText(String.format("Remaining Bubbles: %d", value));
     }
 
-    public void updateMouseCoords(int x, int y) {
-        mouseCoordsLabel.setText(String.format("Mouse: (%d, %d)", x, y));
-    }
-
     @Override
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
         Graphics2D g2 = (Graphics2D) g;
         blaster.draw(g2);
-    }
-
-    public void setBubblePanel(BubblePanel bubblePanel) {
-        this.bubblePanel = bubblePanel;
     }
 }

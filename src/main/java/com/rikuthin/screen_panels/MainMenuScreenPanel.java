@@ -16,10 +16,12 @@ import javax.swing.SwingConstants;
 
 import com.rikuthin.GameFrame;
 import com.rikuthin.GameFrame.PanelName;
+import com.rikuthin.GameManager;
 import static com.rikuthin.utility.ButtonUtil.createButton;
 
 public class MainMenuScreenPanel extends ScreenPanel {
 
+    private final GameManager gameManager;
     private final JLabel titleLabel;
     private final JPanel buttonPanel;
     private final JPanel centreWrapper;
@@ -30,6 +32,7 @@ public class MainMenuScreenPanel extends ScreenPanel {
 
     public MainMenuScreenPanel(GameFrame gameFrame) {
         super(gameFrame);
+        gameManager = GameManager.getInstance();
         setBackground(new Color(87, 73, 100));
         setLayout(new BorderLayout());
 
@@ -88,8 +91,7 @@ public class MainMenuScreenPanel extends ScreenPanel {
     
     private void onStartGame(ActionEvent e) {
         gameFrame.switchToPanel(PanelName.GAMEPLAY);
-        gameFrame.initializeGameManager();
-        gameFrame.getGameManager().startGame();
+        gameManager.startGame();
     }
 
     // TODO

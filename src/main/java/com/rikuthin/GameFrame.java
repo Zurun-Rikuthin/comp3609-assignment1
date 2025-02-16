@@ -9,6 +9,7 @@ import com.rikuthin.screen_panels.GameplayScreenPanel;
 import com.rikuthin.screen_panels.MainMenuScreenPanel;
 
 public final class GameFrame extends JFrame {
+
     public enum PanelName {
         MAIN_MENU,
         GAMEPLAY
@@ -19,12 +20,10 @@ public final class GameFrame extends JFrame {
 
     public static final String BODY_TYPEFACE = "Cooper Black";
 
+    private final GameManager gameManager;
     private final MainMenuScreenPanel mainMenuScreenPanel;
     private final GameplayScreenPanel gameplayScreenPanel;
     private final CardLayout cardLayout;
-
-    // Should only be initialised once the "START GAME" button in the main menu is pressed
-    private GameManager gameManager;
 
     public GameFrame() {
         setTitle("Untitled Bubble Shooter");
@@ -37,6 +36,10 @@ public final class GameFrame extends JFrame {
 
         mainMenuScreenPanel = new MainMenuScreenPanel(this);
         gameplayScreenPanel = new GameplayScreenPanel(this);
+
+        gameManager = GameManager.getInstance();
+        gameManager.setBlasterPanel(gameplayScreenPanel.getBlasterPanel());
+        gameManager.setBubblePanel(gameplayScreenPanel.getBubblePanel());
 
         add(mainMenuScreenPanel, PanelName.MAIN_MENU.name());
         add(gameplayScreenPanel, PanelName.GAMEPLAY.name());
@@ -51,22 +54,6 @@ public final class GameFrame extends JFrame {
         } else {
             System.err.println("Warning: Attempted to switch to an invalid panel: " + panelName);
         }
-    }
-
-    /**
-     * Creates a new GameManager instance (if one does not yet exist); DOES NOT START THE GAME
-     */
-    public void initializeGameManager() {
-        if (gameManager == null) {
-            gameManager = new GameManager(
-                    gameplayScreenPanel.getBlasterPanel(),
-                    gameplayScreenPanel.getBubblePanel()
-            );
-        }
-    }
-
-    public GameManager getGameManager() {
-        return gameManager;
     }
 
     public MainMenuScreenPanel getMainMenuScreenPanel() {
@@ -86,9 +73,6 @@ public final class GameFrame extends JFrame {
     }
 
     public void startGame() {
-        if (gameManager == null) {
-            initializeGameManager();
-        }
         gameManager.startGame();
     }
 }

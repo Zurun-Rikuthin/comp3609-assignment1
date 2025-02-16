@@ -11,28 +11,53 @@ import com.rikuthin.screen_panels.gameplay_subpanels.BubblePanel;
 import com.rikuthin.utility.BubbleColour;
 
 public class GameManager {
-    private final BlasterPanel blasterPanel;
-    private final BubblePanel bubblePanel;
-    
+    private static GameManager instance;
+
+    private BlasterPanel blasterPanel;
+    private BubblePanel bubblePanel;
+
     private OptionalInt remainingBubbles; // Explicitly track uninitialized state
 
-    public GameManager(BlasterPanel blasterPanel, BubblePanel bubblePanel) {
-        this.blasterPanel = blasterPanel;
-        this.bubblePanel = bubblePanel;
+    private GameManager() {
         this.remainingBubbles = OptionalInt.empty(); // Indicates game hasn't started
+    }
+
+    public static GameManager getInstance() {
+        if (instance == null) {
+            instance =  new GameManager();
+        }
+        return instance;
     }
 
     /**
      * Returns the remaining number of bubbles left that the player can shoot.
-     * @return OptionalInt containing remaining bubbles, or empty if startGame() hasn't been called.
+     *
+     * @return OptionalInt containing remaining bubbles, or empty if startGame()
+     * hasn't been called.
      */
     public OptionalInt getRemainingBubbles() {
         return remainingBubbles;
     }
-    
+
+    public BlasterPanel getBlasterPanel() {
+        return blasterPanel;
+    }
+
+    public BubblePanel getBubblePanel() {
+        return bubblePanel;
+    }
+
+    public void setBlasterPanel(BlasterPanel blasterPanel) {
+        this.blasterPanel = blasterPanel;
+    }
+
+    public void setBubblePanel(BubblePanel bubblePanel) {
+        this.bubblePanel = bubblePanel;
+    }
+
     /**
-     * Starts a new game by initializing the bubble count.
-     * If the game is already running, it does nothing.
+     * Starts a new game by initializing the bubble count. If the game is
+     * already running, it does nothing.
      */
     public void startGame() {
         if (remainingBubbles.isEmpty()) {
@@ -44,9 +69,9 @@ public class GameManager {
     }
 
     /**
-     * Shoots a bubble towards a target point.
-     * Reduces the number of remaining bubbles if possible.
-     * 
+     * Shoots a bubble towards a target point. Reduces the number of remaining
+     * bubbles if possible.
+     *
      * @param target The point to shoot the bubble towards.
      */
     public void shootBubble(Point target) {
@@ -57,7 +82,7 @@ public class GameManager {
 
         if (remainingBubbles.getAsInt() > 0) {
             Blaster blaster = blasterPanel.getBlaster();
-            Bubble newBubble = blaster.shootBubble(target, nextBubbleColour().getColour());
+            Bubble newBubble = blaster.shootBubble(target, nextBubbleColour());
             bubblePanel.addBubble(newBubble);
 
             remainingBubbles = OptionalInt.of(remainingBubbles.getAsInt() - 1);
@@ -69,9 +94,10 @@ public class GameManager {
 
     /**
      * Chooses the next bubble's color randomly.
+     *
      * @return The next BubbleColour.
      */
-    private BubbleColour nextBubbleColour() {
-        return BubbleColour.getRandomColourEnum();
+    private Color nextBubbleColour() {
+        return BubbleColour.getRandomColour();
     }
 }
