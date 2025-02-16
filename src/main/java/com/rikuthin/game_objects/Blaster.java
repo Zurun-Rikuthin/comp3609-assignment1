@@ -10,24 +10,27 @@ import com.rikuthin.GameManager;
 import com.rikuthin.utility.Bearing2D;
 
 /**
- * Represents a blaster that moves within a JPanel. The blaster moves along a
- * specified bearing (angle in degrees) at a defined speed (pixels per tick) and
- * bounces off the edges.
+ * Represents a blaster that operates within a JPanel. The blaster can shoot
+ * bubbles in a specified direction (bearing) at a defined speed (pixels per
+ * tick).
+ * <p>
+ * The blaster is responsible for computing the starting position for bubbles
+ * and initiating their movement based on the target point. Additional
+ * functionality, such as rotation, may be implemented in the future.
+ * </p>
  */
 public class Blaster extends Rectangle2D.Double implements Runnable {
 
     private final GameManager gameManager;
 
     /**
-     * The colour of the blaster
+     * The colour of the blaster.
      */
     private Color colour;
 
     /**
-     * The navigational bearing from the blaster's centre point to the current
-     * location of the mouse pointer, represented as a {@link Bearing2D}.
-     *
-     * Defaults to 000 degrees construction.
+     * The navigational bearing from the blaster's centre to the current mouse
+     * pointer location. Defaults to 0° upon construction.
      */
     private Bearing2D bearing;
 
@@ -37,25 +40,25 @@ public class Blaster extends Rectangle2D.Double implements Runnable {
     private int shotSize;
 
     /**
-     * The speed (in pixels/tick) at which bubbles are shot from the blaster.
+     * The speed (in pixels per tick) at which bubbles are shot from the
+     * blaster.
      */
     private double shotSpeed;
 
     /**
      * Constructs a new Blaster.
      *
-     * @param initialX The x-coordinate of the blaster.
-     *
-     * @param initialY The y-coordinate of the blaster.
-     * @param width The width of the blaster.
-     * @param height The height of the blaster.
-     * @param colour The colour of the blaster.
+     * @param x the x-coordinate of the blaster
+     * @param y the y-coordinate of the blaster
+     * @param shotSize the diameter (in pixels) of the blaster (and the bubbles)
+     * @param shotSpeed the speed (in pixels/tick) at which bubbles are shot
+     * @param colour the colour of the blaster
      */
     public Blaster(final int x, final int y, final int shotSize, final double shotSpeed, final Color colour) {
         super(x, y, shotSize, shotSize);
         gameManager = GameManager.getInstance();
         this.colour = colour;
-        bearing = new Bearing2D(0);
+        this.bearing = new Bearing2D(0);
         this.shotSize = shotSize;
         this.shotSpeed = shotSpeed;
     }
@@ -63,7 +66,7 @@ public class Blaster extends Rectangle2D.Double implements Runnable {
     /**
      * Returns the colour of the blaster.
      *
-     * @return The {@link Color} of the blaster.
+     * @return the {@link Color} of the blaster
      */
     public Color getColour() {
         return colour;
@@ -73,8 +76,7 @@ public class Blaster extends Rectangle2D.Double implements Runnable {
      * Returns the current bearing (direction) of the blaster relative to the
      * mouse pointer.
      *
-     * @return The {@link Bearing2D} representing the angle between the blaster
-     * and the mouse pointer.
+     * @return the {@link Bearing2D} representing the current bearing
      */
     public Bearing2D getBearing() {
         return bearing;
@@ -84,26 +86,25 @@ public class Blaster extends Rectangle2D.Double implements Runnable {
      * Returns the size (in pixels) of the bubbles that will be shot from the
      * blaster.
      *
-     * @return The diamter of the {@link Bubble} shot from the blaster.
+     * @return the diameter of the bubbles
      */
     public int getShotSize() {
         return shotSize;
     }
 
     /**
-     * Returns the speed (in pixels/tick) of the bubbles that will be shot from
-     * the blaster.
+     * Returns the speed (in pixels/tick) at which the bubbles will move.
      *
-     * @return The speed the {@link Bubble} shot from the blaster will move at.
+     * @return the speed of the bubbles
      */
     public double getShotSpeed() {
         return shotSpeed;
     }
 
     /**
-     * Returns the colour of the blaster.
+     * Sets the colour of the blaster.
      *
-     * @return The {@link Color} of the blaster.
+     * @param colour the new {@link Color} for the blaster
      */
     public void setColour(Color colour) {
         this.colour = colour;
@@ -112,7 +113,7 @@ public class Blaster extends Rectangle2D.Double implements Runnable {
     /**
      * Sets the bearing (direction) of the blaster's movement.
      *
-     * @param bearing The new {@link Bearing2D} direction.
+     * @param bearing the new {@link Bearing2D} direction
      */
     public void setBearing(Bearing2D bearing) {
         this.bearing = bearing;
@@ -122,80 +123,45 @@ public class Blaster extends Rectangle2D.Double implements Runnable {
      * Sets the size (in pixels) of the bubbles that will be shot from the
      * blaster.
      *
-     * @return The new {@link Bubble} size.
+     * @param shotSize the new bubble diameter
      */
     public void setShotSize(final int shotSize) {
         this.shotSize = shotSize;
     }
 
     /**
-     * Returns the speed (in pixels/tick) of the bubbles that will be shot from
-     * the blaster.
+     * Sets the speed (in pixels/tick) of the bubbles that will be shot from the
+     * blaster.
      *
-     * @return The new {@link Bubble} speed.
+     * @param shotSpeed the new bubble speed
      */
     public void setShotSpeed(double shotSpeed) {
         this.shotSpeed = shotSpeed;
     }
 
     /**
-     * Moves the blaster according to its bearing (angle in degrees) and speed
-     * (pixels per tick). If the blaster reaches the edges of the panel, it
-     * bounces off and changes direction.
-     */
-    // public void rotate() {
-    //     if (!panel.isVisible()) {
-    //         return;
-    //     }
-    //     double radians = Math.toRadians(bearing.getDegrees());
-    //     x += pixelsPerTick * Math.cos(radians);
-    //     y += pixelsPerTick * Math.sin(radians);
-    //     Dimension panelSize = panel.getSize();
-    //     // Bounce off left/right edges
-    //     if (x < 0) {
-    //         x = 0;
-    //         bearing.setDegrees(180 - bearing.getDegrees()); // Reverse X direction
-    //     } else if (x + width > panelSize.width) {
-    //         x = panelSize.width - width;
-    //         bearing.setDegrees(180 - bearing.getDegrees()); // Reverse X direction
-    //     }
-    //     // Bounce off top/bottom edges
-    //     if (y < 0) {
-    //         y = 0;
-    //         bearing.setDegrees(360 - bearing.getDegrees()); // Reverse Y direction
-    //     } else if (y + height > panelSize.height) {
-    //         y = panelSize.height - height;
-    //         bearing.setDegrees(360 - bearing.getDegrees()); // Reverse Y direction
-    //     }
-    //     // Repaint the panel on the EDT to ensure thread safety
-    //     javax.swing.SwingUtilities.invokeLater(panel::repaint);
-    // }
-    /**
      * Shoots a new Bubble instance towards the given target location.
+     * <p>
+     * The bubble is created at the centre of the blaster and its movement
+     * direction is determined by calculating the bearing from the blaster's
+     * centre to the target.
+     * </p>
      *
-     * @param target The mouse position where the bubble should move.
-     * @param bubbleColour The color of the bubble.
-     * @param bubbleSize The size (diameter) of the bubble.
-     * @param bubbleSpeed The speed at which the bubble moves.
-     * @return The newly created bubble.
+     * @param target the mouse position where the bubble should travel
+     * @param bubbleColour the colour of the bubble
+     * @return the newly created {@link Bubble} instance
+     * @throws IllegalArgumentException if the target is null
      */
     public Bubble shootBubble(final Point target, final Color bubbleColour) {
-        // Ensure target is not null (failsafe)
         if (target == null) {
             throw new IllegalArgumentException("Target position cannot be null");
         }
 
-        // Get the starting position of the bubble (center of the blaster)
         int startX = (int) Math.round(getCenterX());
         int startY = (int) Math.round(getCenterY());
 
-        // Create the bubble
         Bubble bubble = new Bubble(startX, startY, shotSize, bubbleColour, gameManager.getBubblePanel());
-
-        // Set the bubble's direction using the given target
         bubble.setBearing(new Bearing2D(startX, startY, target.x, target.y));
-
-        // Set speed and movement
         bubble.setSpeed(shotSpeed);
         bubble.setIsMoving(true);
 
@@ -207,7 +173,7 @@ public class Blaster extends Rectangle2D.Double implements Runnable {
     /**
      * Draws the blaster onto the provided {@link Graphics2D} context.
      *
-     * @param g2 The {@link Graphics2D} object used for rendering.
+     * @param g2 the {@link Graphics2D} object used for rendering
      */
     public void draw(Graphics2D g2) {
         g2.setColor(colour);
@@ -217,14 +183,18 @@ public class Blaster extends Rectangle2D.Double implements Runnable {
     }
 
     /**
-     * Runs the blaster's movement logic in a loop until it is stopped.
+     * Runs the blaster's movement logic in a loop.
+     * <p>
+     * Note: Rotation logic is currently disabled. Future implementations may
+     * enable dynamic movement or rotation.
+     * </p>
      */
     @Override
     public void run() {
         while (true) {
-            // rotate();
+            // Future implementation: rotate();
             try {
-                Thread.sleep(20); // Controls speed
+                Thread.sleep(20); // Controls the update interval (speed)
             } catch (InterruptedException e) {
                 Thread.currentThread().interrupt(); // Restore interrupted state
                 break;
@@ -233,12 +203,12 @@ public class Blaster extends Rectangle2D.Double implements Runnable {
     }
 
     /**
-     * Checks if this blaster is equal to another object. Two blasters are
-     * considered equal if they have the same position, size, color, movement
-     * status, bearing, and speed.
+     * Compares this blaster with another object for equality. Two blasters are
+     * considered equal if they have the same position, size, colour, movement
+     * status, bearing, and shot properties.
      *
-     * @param obj The object to compare with.
-     * @return {@code true} if the blasters are equal, otherwise {@code false}.
+     * @param obj the object to compare with
+     * @return {@code true} if the blasters are equal; {@code false} otherwise
      */
     @Override
     public boolean equals(Object obj) {
@@ -252,19 +222,18 @@ public class Blaster extends Rectangle2D.Double implements Runnable {
         return java.lang.Double.compare(x, other.x) == 0
                 && java.lang.Double.compare(y, other.y) == 0
                 && java.lang.Double.compare(width, other.width) == 0
-                && java.lang.Double.compare(height, other.height) == 0 // Included for safety even though it's a circle
-                && colour.equals(other.getColour())
-                && bearing.equals(other.getBearing())
-                && java.lang.Integer.compare(shotSize, other.getShotSize()) == 0
-                && java.lang.Double.compare(shotSpeed, other.getShotSpeed()) == 0;
-
+                && java.lang.Double.compare(height, other.height) == 0
+                && colour.equals(other.colour)
+                && bearing.equals(other.bearing)
+                && shotSize == other.shotSize
+                && java.lang.Double.compare(shotSpeed, other.shotSpeed) == 0;
     }
 
     /**
-     * Computes the hash code for this blaster using its position, size, color,
-     * movement status, bearing, and speed.
+     * Computes the hash code for this blaster based on its position, size,
+     * colour, bearing, and shot properties.
      *
-     * @return The hash code of the blaster.
+     * @return the hash code of this blaster
      */
     @Override
     public int hashCode() {

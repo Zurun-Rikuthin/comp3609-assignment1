@@ -11,6 +11,7 @@ import com.rikuthin.screen_panels.gameplay_subpanels.BubblePanel;
 import com.rikuthin.utility.BubbleColour;
 
 public class GameManager {
+
     private static GameManager instance;
 
     private BlasterPanel blasterPanel;
@@ -22,9 +23,14 @@ public class GameManager {
         this.remainingBubbles = OptionalInt.empty(); // Indicates game hasn't started
     }
 
+    /**
+     * Returns the singleton instance of the GameManager.
+     *
+     * @return The single instance of GameManager.
+     */
     public static GameManager getInstance() {
         if (instance == null) {
-            instance =  new GameManager();
+            instance = new GameManager();
         }
         return instance;
     }
@@ -69,6 +75,15 @@ public class GameManager {
     }
 
     /**
+     * Resets the game to its initial state, allowing the player to start again.
+     * If the game is already in progress, it will be reset.
+     */
+    public void resetGame() {
+        remainingBubbles = OptionalInt.of(50);
+        blasterPanel.updateRemainingBubblesCounter(50);
+    }
+
+    /**
      * Shoots a bubble towards a target point. Reduces the number of remaining
      * bubbles if possible.
      *
@@ -80,16 +95,18 @@ public class GameManager {
             return;
         }
 
-        if (remainingBubbles.getAsInt() > 0) {
-            Blaster blaster = blasterPanel.getBlaster();
-            Bubble newBubble = blaster.shootBubble(target, nextBubbleColour());
-            bubblePanel.addBubble(newBubble);
+        remainingBubbles.ifPresent(bubbleCount -> {
+            if (bubbleCount > 0) {
+                Blaster blaster = blasterPanel.getBlaster();
+                Bubble newBubble = blaster.shootBubble(target, nextBubbleColour());
+                bubblePanel.addBubble(newBubble);
 
-            remainingBubbles = OptionalInt.of(remainingBubbles.getAsInt() - 1);
-            blasterPanel.updateRemainingBubblesCounter(remainingBubbles.getAsInt());
-        } else {
-            System.err.println("Warning: No more bubbles left to shoot.");
-        }
+                remainingBubbles = OptionalInt.of(bubbleCount - 1);
+                blasterPanel.updateRemainingBubblesCounter(bubbleCount - 1);
+            } else {
+                System.err.println("Warning: No more bubbles left to shoot.");
+            }
+        });
     }
 
     /**

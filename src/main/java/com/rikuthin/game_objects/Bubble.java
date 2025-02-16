@@ -14,37 +14,15 @@ import com.rikuthin.utility.Bearing2D;
 /**
  * Represents a bubble that moves within a JPanel. The bubble moves along a
  * specified bearing (angle in degrees) at a defined speed (pixels per tick) and
- * bounces off the edges.
+ * bounces off the edges of the panel.
  */
 public class Bubble extends Ellipse2D.Double implements Runnable {
 
-    /**
-     * The panel within which the bubble moves.
-     */
-    private final JPanel panel;
-
-    /**
-     * The colour of the bubble
-     */
-    private final Color colour;
-
-    /**
-     * Whether the bubble should start moving. Set {@code False} by default upon
-     * construction.
-     */
-    private boolean isMoving;
-
-    /**
-     * The direction of movement, represented as a {@link Bearing2D}. Set to
-     * {@code 0} degrees by default during construction.
-     */
-    private Bearing2D bearing;
-
-    /**
-     * The speed of the bubble's movement in pixels per tick. * Set to {@code 0}
-     * by default during construction.
-     */
-    private double speed;
+    private final JPanel panel;  // The panel on which the bubble moves
+    private final Color colour;  // Colour of the bubble
+    private boolean isMoving;    // Whether the bubble should move
+    private Bearing2D bearing;   // Direction of movement (bearing)
+    private double speed;        // Movement speed (in pixels per tick)
 
     /**
      * Constructs a new Bubble.
@@ -59,120 +37,76 @@ public class Bubble extends Ellipse2D.Double implements Runnable {
         super(initialX, initialY, size, size);
         this.panel = panel;
         this.colour = colour;
-        isMoving = false;
-        bearing = new Bearing2D(0);
-        speed = 0;
+        this.isMoving = false;
+        this.bearing = new Bearing2D(0);
+        this.speed = 0;
     }
 
-    /**
-     * Returns whether the bubble is currently moving.
-     *
-     * @return {@code true} if the bubble is moving, otherwise {@code false}.
-     */
     public boolean isMoving() {
         return isMoving;
     }
 
-    /**
-     * Returns the current bearing (direction) of the bubble.
-     *
-     * @return The {@link Bearing2D} representing the bubble's movement
-     * direction.
-     */
     public Bearing2D getBearing() {
         return bearing;
     }
 
-    /**
-     * Returns the movement speed of the bubble.
-     *
-     * @return The speed in pixels per tick.
-     */
     public double getSpeed() {
         return speed;
     }
 
-    /**
-     * Sets whether the bubble should move.
-     *
-     * @param isMoving {@code true} to make the bubble move, {@code false} to
-     * stop it.
-     */
     public void setIsMoving(boolean isMoving) {
         this.isMoving = isMoving;
     }
 
-    /**
-     * Sets the bearing (direction) of the bubble's movement.
-     *
-     * @param bearing The new {@link Bearing2D} direction.
-     */
     public void setBearing(Bearing2D bearing) {
         this.bearing = bearing;
     }
 
-    /**
-     * Sets the movement speed of the bubble to a new absolute (positive)
-     * value).
-     *
-     * @param pixelsPerTick The new speed in pixels per tick.
-     */
     public void setSpeed(double speed) {
         this.speed = Math.abs(speed);
     }
 
     /**
-     * Moves the bubble according to its bearing (angle in degrees) and speed
-     * (pixels per tick).
-     * 
-     * If the bubble hits the side edges of the panel, it bounces off and changes direction.
-     * If the bubble hits the top of the panel or collides with another bubble, it stops moving.
+     * Moves the bubble based on its bearing and speed. The bubble bounces off
+     * the edges of the panel. If it hits the top edge, it stops.
      */
     public void move() {
         if (!panel.isVisible()) {
             return;
         }
 
-        // https://gis.stackexchange.com/questions/187286/how-to-convert-double-bearing-into-x-and-y-coordinate
-
+        // Conversion formula source: https://gis.stackexchange.com/questions/187286/how-to-convert-double-bearing-into-x-and-y-coordinate
         final double radians = Math.toRadians(bearing.getDegrees());
         final double newX = x + speed * Math.cos(radians);
-        final double newY = y - speed * Math.sin(radians); // Inverted because +y is downward in Swing compared to normal Cartesian +y
+        final double newY = y - speed * Math.sin(radians); // Inverted to convert Cartesian coordinates to screen coordinates
 
         Dimension panelSize = panel.getSize();
 
         // Bounce off left/right edges
         if (newX < 0) {
             x = 0;
-            bearing.setDegrees(180 - bearing.getDegrees()); // Reverse X direction
+            bearing.setDegrees(180 - bearing.getDegrees());  // Reverse X direction
         } else if (newX + width > panelSize.width) {
             x = panelSize.width - width;
-            bearing.setDegrees(180 - bearing.getDegrees()); // Reverse X direction
+            bearing.setDegrees(180 - bearing.getDegrees());  // Reverse X direction
         }
 
         // Stop moving at top edge
         if (newY < 0) {
             y = 0;
             isMoving = false;
+        } else if (newY + height > panelSize.height) {
+            y = panelSize.height - height;
+            bearing.setDegrees(360 - bearing.getDegrees());  // Reverse Y direction (if bottom is enabled)
         }
 
-        // Bounce off top/bottom edges
-        // if (y < 0) {
-        //     y = 0;
-        //     bearing.setDegrees(360 - bearing.getDegrees()); // Reverse Y direction
-        // } else if (y + height > panelSize.height) {
-        //     y = panelSize.height - height;
-        //     bearing.setDegrees(360 - bearing.getDegrees()); // Reverse Y direction
-        // }
-
-        // Repaint the panel on the EDT to ensure thread safety
-        javax.swing.SwingUtilities.invokeLater(panel::repaint);
+        javax.swing.SwingUtilities.invokeLater(panel::repaint);  // Thread-safe repaint
     }
 
     /**
-     * Draws the bubble onto the provided {@link Graphics2D} context.
+     * Draws the bubble onto the provided Graphics2D context.
      *
-     * @param g2 The {@link Graphics2D} object used for rendering.
+     * @param g2 The Graphics2D object used for rendering.
      */
     public void draw(Graphics2D g2) {
         g2.setColor(colour);
@@ -182,17 +116,17 @@ public class Bubble extends Ellipse2D.Double implements Runnable {
     }
 
     /**
-     * Runs the bubble's movement logic in a loop until it is stopped. The
-     * bubble will move continuously unless {@code isMoving} is set to false.
+     * Runs the bubble's movement logic in a loop, moving the bubble
+     * continuously while the isMoving flag is true.
      */
     @Override
     public void run() {
         while (isMoving) {
             move();
             try {
-                Thread.sleep(App.TICK_SPEED_MS); // Controls speed
+                Thread.sleep(App.TICK_SPEED_MS); // Controls the movement speed
             } catch (InterruptedException e) {
-                Thread.currentThread().interrupt(); // Restore interrupted state
+                Thread.currentThread().interrupt();  // Restore interrupted state
                 break;
             }
         }
@@ -218,12 +152,10 @@ public class Bubble extends Ellipse2D.Double implements Runnable {
         return java.lang.Double.compare(x, other.x) == 0
                 && java.lang.Double.compare(y, other.y) == 0
                 && java.lang.Double.compare(width, other.width) == 0
-                && java.lang.Double.compare(height, other.height) == 0 // Included for safety even though it's a circle
                 && colour.equals(other.colour)
                 && isMoving == other.isMoving
                 && bearing.equals(other.bearing)
                 && java.lang.Double.compare(speed, other.speed) == 0;
-
     }
 
     /**
@@ -236,5 +168,4 @@ public class Bubble extends Ellipse2D.Double implements Runnable {
     public int hashCode() {
         return Objects.hash(x, y, width, colour, isMoving, bearing, speed);
     }
-
 }

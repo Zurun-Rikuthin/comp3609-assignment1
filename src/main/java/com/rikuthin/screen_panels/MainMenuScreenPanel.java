@@ -19,24 +19,31 @@ import com.rikuthin.GameFrame.PanelName;
 import com.rikuthin.GameManager;
 import static com.rikuthin.utility.ButtonUtil.createButton;
 
+/**
+ * Main menu screen of the game. Provides options to start a new game, view
+ * instructions, adjust settings, see high scores, and quit the game.
+ */
 public class MainMenuScreenPanel extends ScreenPanel {
 
-    private final GameManager gameManager;
     private final JLabel titleLabel;
     private final JPanel buttonPanel;
     private final JPanel centreWrapper;
     private final JPanel titlePanel;
-    
-    // TODO
-    // private final JToggleButton muteMusicButton;
 
+    // TODO: Implement mute functionality
+    // private final JToggleButton muteMusicButton;
+    /**
+     * Constructs the main menu screen panel with buttons for starting the game,
+     * viewing how to play, settings, high scores, and quitting.
+     *
+     * @param gameFrame The GameFrame object that manages panel transitions.
+     */
     public MainMenuScreenPanel(GameFrame gameFrame) {
         super(gameFrame);
-        gameManager = GameManager.getInstance();
         setBackground(new Color(87, 73, 100));
         setLayout(new BorderLayout());
 
-        // Title Label (centered at the top)
+        // ----- Title Section (Centered at the top) -----
         titlePanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
         titlePanel.setOpaque(false);
 
@@ -50,65 +57,76 @@ public class MainMenuScreenPanel extends ScreenPanel {
 
         add(titlePanel, BorderLayout.NORTH);
 
-        // ----- Centred Button Panel -----
+        // ----- Button Section -----
         buttonPanel = new JPanel();
         buttonPanel.setLayout(new BoxLayout(buttonPanel, BoxLayout.Y_AXIS));
         buttonPanel.setOpaque(false);
 
         final Font buttonFont = new Font(GameFrame.BODY_TYPEFACE, Font.PLAIN, 16);
-        buttonPanel.add(Box.createVerticalStrut(100));
+        buttonPanel.add(Box.createVerticalStrut(100));  // Add space above buttons
 
+        // Button labels and their corresponding actions
         final String[] labels = {"START GAME", "HOW TO PLAY", "SETTINGS", "HIGHSCORES", "QUIT GAME"};
         final ActionListener[] actions = {this::onStartGame, this::onHowToPlay, this::onSettings, this::onHighscores, this::onQuitGame};
 
+        // Create and add buttons
         for (int i = 0; i < labels.length; i++) {
-            // Only enable START GAME and QUIT GAME for now
+            // Only enable "START GAME" and "QUIT GAME" for now
             JButton button = createButton(labels[i], buttonFont, 180, 40, i != 1 && i != 2 && i != 3, actions[i]);
             buttonPanel.add(button);
-            buttonPanel.add(Box.createVerticalStrut(10));
+            buttonPanel.add(Box.createVerticalStrut(10));  // Space between buttons
         }
 
-        centreWrapper = new JPanel(new FlowLayout(FlowLayout.CENTER));  // Centering the buttons more easily
+        // Center the button panel
+        centreWrapper = new JPanel(new FlowLayout(FlowLayout.CENTER));
         centreWrapper.setOpaque(false);
         centreWrapper.add(buttonPanel);
 
         add(centreWrapper, BorderLayout.CENTER);
 
-        // TODO
-        // // ----- Mute Button (Top) -----
+        // TODO: Implement Mute Music Button
         // muteButtonPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
         // muteButtonPanel.setOpaque(false);
-        // muteMusicButton = createToggleButton("MUTE", 90, 40, false, this::onMuteMusic);
+        // muteMusicButton = createToggleButton("MUTE", buttonFont, 90, 40, false, this::onMuteMusic);
         // muteButtonPanel.add(muteMusicButton);
-        // add(muteButtonPanel, BorderLayout.NORTH);  // Add to the west (left side)
+        // add(muteButtonPanel, BorderLayout.NORTH);  // Add to the left side
     }
 
-    // TODO
+    // TODO: Implement mute functionality
     // private void onMuteMusic(ActionEvent e) {
-    //     System.out.println("Mute Button not implemented");
+    //     System.out.println("Mute functionality is not yet implemented.");
     // }
-
-    
+    /**
+     * Starts the game by switching to the gameplay panel and initializing the
+     * game.
+     *
+     * @param e The action event triggered by the button.
+     */
     private void onStartGame(ActionEvent e) {
         gameFrame.switchToPanel(PanelName.GAMEPLAY);
-        gameManager.startGame();
+        GameManager.getInstance().startGame();
     }
 
-    // TODO
+    // TODO: Implement the functionality for viewing how to play
     private void onHowToPlay(ActionEvent e) {
-        System.out.println("How to Play Screen not implemented");
+        System.out.println("How to Play screen is not implemented yet.");
     }
 
-    // TODO
+    // TODO: Implement the functionality for the settings menu
     private void onSettings(ActionEvent e) {
-        System.out.println("Settings Menu not implemented");
+        System.out.println("Settings menu is not implemented yet.");
     }
 
-    // TODO
+    // TODO: Implement the functionality for high scores
     private void onHighscores(ActionEvent e) {
-        System.out.println("High Scores screen not implemented");
+        System.out.println("High scores screen is not implemented yet.");
     }
 
+    /**
+     * Exits the game when the quit button is pressed.
+     *
+     * @param e The action event triggered by the button.
+     */
     private void onQuitGame(ActionEvent e) {
         System.exit(0);
     }

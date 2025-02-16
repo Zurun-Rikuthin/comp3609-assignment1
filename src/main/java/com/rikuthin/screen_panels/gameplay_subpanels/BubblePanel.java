@@ -16,40 +16,68 @@ import com.rikuthin.GameFrame;
 import com.rikuthin.GameManager;
 import com.rikuthin.game_objects.Bubble;
 
+/**
+ * The BubblePanel is responsible for displaying the bubbles in the game and
+ * handling user interaction.
+ * <p>
+ * This panel allows the player to shoot bubbles by clicking on the screen, and
+ * it manages the rendering of bubbles in the gameplay area.
+ * </p>
+ */
 public class BubblePanel extends JPanel {
 
-    private final GameManager gameManager;
+    /**
+     * A list of bubbles contained within the panel
+     */
     private final List<Bubble> bubbles;
 
-    public BubblePanel(GameManager gameManager) {
-        this.gameManager = gameManager;
-        bubbles = new ArrayList<>();
+    /**
+     * Constructs the BubblePanel, initializing the list of bubbles and setting
+     * up the background and mouse listener for bubble shooting.
+     */
+    public BubblePanel() {
+        this.bubbles = new ArrayList<>();
+
+        // Set panel background color and preferred size.
         setBackground(new Color(200, 170, 170));
         setPreferredSize(new Dimension(GameFrame.FRAME_WIDTH, 590));
 
-        // Shoot the blaster when clicked
+        // Mouse click listener to shoot bubbles when clicked.
         addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
                 if (isVisible()) {
                     Point target = new Point(e.getX(), e.getY());
-                    gameManager.shootBubble(target);
-                    repaint();
+                    GameManager.getInstance().shootBubble(target);
+                    repaint(); // Repaint the panel to update bubble positions.
                 }
             }
         });
     }
 
+    /**
+     * Adds a bubble to the panel and triggers a repaint to display it.
+     *
+     * @param bubble The bubble to add to the panel.
+     */
     public void addBubble(Bubble bubble) {
         bubbles.add(bubble);
-        repaint();
+        repaint(); // Repaint to show the new bubble.
     }
 
+    /**
+     * Paints the component by rendering all the bubbles in the list. This
+     * method is automatically called by the Swing framework when the panel
+     * needs to be redrawn.
+     *
+     * @param g The graphics context used for drawing.
+     */
     @Override
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
         Graphics2D g2 = (Graphics2D) g;
 
+        // Draw each bubble in the list.
         for (Bubble bubble : bubbles) {
             bubble.draw(g2);
         }
