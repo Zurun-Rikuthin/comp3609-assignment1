@@ -90,6 +90,10 @@ public class BubblePanel extends JPanel {
         repaint(); // Repaint to show the new bubble.
     }
 
+    public List<Bubble> getBubbles() {
+        return bubbles;
+    }
+
     /**
      * Paints the component by rendering all the bubbles in the list. This
      * method is automatically called by the Swing framework when the panel

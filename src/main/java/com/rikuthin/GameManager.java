@@ -14,13 +14,16 @@ public class GameManager {
 
     private static GameManager instance;
 
+    private Bubble activeBubble;
     private BlasterPanel blasterPanel;
     private BubblePanel bubblePanel;
-
     private OptionalInt remainingBubbles; // Explicitly track uninitialized state
+    private boolean canShootBlaster;
+    private boolean gameActive;
 
     private GameManager() {
-        this.remainingBubbles = OptionalInt.empty(); // Indicates game hasn't started
+        remainingBubbles = OptionalInt.empty(); // Indicates game hasn't started
+        gameActive = false;
     }
 
     /**
@@ -62,25 +65,16 @@ public class GameManager {
     }
 
     /**
-     * Starts a new game by initializing the bubble count. If the game is
-     * already running, it does nothing.
+     * Starts a new game by resetting/initialising game values/objects.
      */
     public void startGame() {
-        if (remainingBubbles.isEmpty()) {
-            remainingBubbles = OptionalInt.of(50);
-            blasterPanel.updateRemainingBubblesCounter(50);
-        } else {
-            System.err.println("Warning: Attempted to start a game that is already running.");
+        if (blasterPanel == null || bubblePanel == null) {
+            throw new IllegalStateException("Error: Game cannot start. BlasterPanel and BubblePanel must be set first.");
         }
-    }
-
-    /**
-     * Resets the game to its initial state, allowing the player to start again.
-     * If the game is already in progress, it will be reset.
-     */
-    public void resetGame() {
+        
         remainingBubbles = OptionalInt.of(50);
         blasterPanel.updateRemainingBubblesCounter(50);
+        gameActive = true;
     }
 
     /**
@@ -90,7 +84,7 @@ public class GameManager {
      * @param target The point to shoot the bubble towards.
      */
     public void shootBubble(Point target) {
-        if (remainingBubbles.isEmpty()) {
+        if (!gameActive) {
             System.err.println("Error: Cannot shoot bubble. Game has not started.");
             return;
         }
@@ -115,6 +109,9 @@ public class GameManager {
      * @return The next BubbleColour.
      */
     private Color nextBubbleColour() {
+        if (!gameActive) {
+            return null;
+        }
         return BubbleColour.getRandomColour();
     }
 }

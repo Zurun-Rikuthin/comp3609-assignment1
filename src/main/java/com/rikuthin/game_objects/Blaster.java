@@ -165,7 +165,7 @@ public class Blaster extends Rectangle2D.Double implements Runnable {
 
         System.out.println(String.format("Starting coordinates: (%d, %d), Target coordinates: (%d, %d)", startX, startY, target.x, target.y));
 
-        Bubble bubble = new Bubble(startX, startY, shotSize, bubbleColour, gameManager.getBubblePanel());
+        Bubble bubble = new Bubble(startX, startY, bubbleColour);
         bubble.setBearing(new Bearing2D(startX, startY, target.x, target.y));
         bubble.setSpeed(shotSpeed);
         bubble.setIsMoving(true);
