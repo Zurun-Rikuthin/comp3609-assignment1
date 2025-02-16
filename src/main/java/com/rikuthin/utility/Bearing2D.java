@@ -1,4 +1,4 @@
-package com.rikuthin;
+package com.rikuthin.utility;
 
 /**
  * Represents a bearing (direction) in 2D space, measured in degrees.

@@ -14,9 +14,9 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.SwingConstants;
 
-import static com.rikuthin.ButtonUtil.createButton;
 import com.rikuthin.GameFrame;
 import static com.rikuthin.GameFrame.GAMEPLAY_PANEL_NAME;
+import static com.rikuthin.utility.ButtonUtil.createButton;
 
 public class MainMenuScreenPanel extends ScreenPanel {
 
@@ -78,32 +78,32 @@ public class MainMenuScreenPanel extends ScreenPanel {
         // add(muteButtonPanel, BorderLayout.NORTH);  // Add to the west (left side)
     }
 
-    @SuppressWarnings(value = {"unused"})
+    // TODO
     private void onMuteMusic(ActionEvent e) {
         System.out.println("Mute Button not implemented");
     }
 
-    @SuppressWarnings(value = {"unused"})
+    // TODO
     private void onStartGame(ActionEvent e) {
         gameFrame.switchToPanel(GAMEPLAY_PANEL_NAME);
+        gameFrame.getGameManager().startGame();
     }
 
-    @SuppressWarnings(value = {"unused"})
+    // TODO
     private void onHowToPlay(ActionEvent e) {
         System.out.println("How to Play Screen not implemented");
     }
 
-    @SuppressWarnings(value = {"unused"})
+    // TODO
     private void onSettings(ActionEvent e) {
         System.out.println("Settings Menu not implemented");
     }
 
-    @SuppressWarnings(value = {"unused"})
+    // TODO
     private void onHighscores(ActionEvent e) {
         System.out.println("High Scores screen not implemented");
     }
 
-    @SuppressWarnings(value = {"unused"})
     private void onQuitGame(ActionEvent e) {
         System.exit(0);
     }

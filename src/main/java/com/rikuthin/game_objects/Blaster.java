@@ -6,8 +6,8 @@ import java.awt.Point;
 import java.awt.geom.Rectangle2D;
 import java.util.Objects;
 
-import com.rikuthin.Bearing2D;
 import com.rikuthin.screen_panels.gameplay_subpanels.BubblePanel;
+import com.rikuthin.utility.Bearing2D;
 
 /**
  * Represents a blaster that moves within a JPanel. The blaster moves along a
@@ -202,6 +202,9 @@ public class Blaster extends Rectangle2D.Double implements Runnable {
         // Set speed and movement
         bubble.setSpeed(shotSpeed);
         bubble.setIsMoving(true);
+
+        bubblePanel.addBubble(bubble);
+        new Thread(bubble).start();
 
         return bubble;
     }

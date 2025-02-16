@@ -12,10 +12,10 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.Timer;
 
-import static com.rikuthin.ButtonUtil.createButton;
 import com.rikuthin.GameFrame;
-import com.rikuthin.RoundedBorder;
 import com.rikuthin.dialogue_panels.PauseMenuDialogue;
+import static com.rikuthin.utility.ButtonUtil.createButton;
+import com.rikuthin.utility.RoundedBorder;
 
 public final class StatusPanel extends JPanel {
 

@@ -10,6 +10,13 @@ public class App {
 
     public static void main(String[] args) {
         // Schedules GameFrame creation on the EDT
-        SwingUtilities.invokeLater(GameFrame::new);
+        SwingUtilities.invokeLater(App::launchGame);
+    }
+
+    public static void launchGame() {
+        GameFrame gameFrame = new GameFrame();
+        GameManager gameManager = new GameManager(gameFrame);
+        gameFrame.setGameManager(gameManager);
+        gameManager.startGame();
     }
 }

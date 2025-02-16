@@ -21,6 +21,7 @@ public final class GameFrame extends JFrame {
     private final MainMenuScreenPanel mainMenuScreenPanel;
     private final GameplayScreenPanel gameplayScreenPanel;
     private final CardLayout cardLayout;
+    private GameManager gameManager;  // Reference to GameManager
 
     public GameFrame() {
         setTitle("Untitled Bubble Shooter");
@@ -41,6 +42,23 @@ public final class GameFrame extends JFrame {
         setVisible(true);
     }
 
+    public GameManager getGameManager() {
+        return gameManager;
+    }
+
+    public MainMenuScreenPanel getMainMenuScreenPanel() {
+        return mainMenuScreenPanel;
+    }
+
+    public GameplayScreenPanel getGameplayScreenPanel() {
+        return gameplayScreenPanel;
+    }
+
+    // Method to set the GameManager from the App
+    public void setGameManager(GameManager gameManager) {
+        this.gameManager = gameManager;
+    }
+
     public void switchToPanel(final String panelName) {
         cardLayout.show(getContentPane(), panelName);
     }
@@ -59,5 +77,9 @@ public final class GameFrame extends JFrame {
         }
         return null;
     }
-    
+
+    // Method to start the game (could be triggered by a button or game state change)
+    public void startGame() {
+        gameManager.startGame();
+    }
 }

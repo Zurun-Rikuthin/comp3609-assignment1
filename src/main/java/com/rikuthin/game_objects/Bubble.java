@@ -9,7 +9,7 @@ import java.util.Objects;
 import javax.swing.JPanel;
 
 import com.rikuthin.App;
-import com.rikuthin.Bearing2D;
+import com.rikuthin.utility.Bearing2D;
 
 /**
  * Represents a bubble that moves within a JPanel. The bubble moves along a

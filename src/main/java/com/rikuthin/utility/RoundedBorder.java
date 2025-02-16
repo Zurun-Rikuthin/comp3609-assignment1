@@ -1,4 +1,4 @@
-package com.rikuthin;
+package com.rikuthin.utility;
 
 /*
  * The original code for this class was written by Santiago Benoit
