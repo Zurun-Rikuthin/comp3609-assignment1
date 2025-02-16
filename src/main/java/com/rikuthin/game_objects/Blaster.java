@@ -156,9 +156,14 @@ public class Blaster extends Rectangle2D.Double implements Runnable {
         if (target == null) {
             throw new IllegalArgumentException("Target position cannot be null");
         }
+        
+        final int bubblePanelHeight = gameManager.getBubblePanel().getHeight();
+        
+        final int startX = (int) Math.round(getCenterX());
+        // Account for the blaster panel being below the bubble panel
+        final int startY = (int) Math.round(getCenterY()) + bubblePanelHeight;
 
-        int startX = (int) Math.round(getCenterX());
-        int startY = (int) Math.round(getCenterY());
+        System.out.println(String.format("Starting coordinates: (%d, %d), Target coordinates: (%d, %d)", startX, startY, target.x, target.y));
 
         Bubble bubble = new Bubble(startX, startY, shotSize, bubbleColour, gameManager.getBubblePanel());
         bubble.setBearing(new Bearing2D(startX, startY, target.x, target.y));

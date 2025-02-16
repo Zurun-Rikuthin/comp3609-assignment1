@@ -89,6 +89,8 @@ public class Bubble extends Ellipse2D.Double implements Runnable {
         } else if (newX + width > panelSize.width) {
             x = panelSize.width - width;
             bearing.setDegrees(180 - bearing.getDegrees());  // Reverse X direction
+        } else {
+            x = newX;
         }
 
         // Stop moving at top edge
@@ -98,6 +100,8 @@ public class Bubble extends Ellipse2D.Double implements Runnable {
         } else if (newY + height > panelSize.height) {
             y = panelSize.height - height;
             bearing.setDegrees(360 - bearing.getDegrees());  // Reverse Y direction (if bottom is enabled)
+        } else {
+            y = newY;
         }
 
         javax.swing.SwingUtilities.invokeLater(panel::repaint);  // Thread-safe repaint

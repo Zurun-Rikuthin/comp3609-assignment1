@@ -6,9 +6,8 @@ public class App {
 
     /**
      * How often the various threads should update themselves (milliseconds).
-     * The value is set to 20 milliseconds.
      */
-    public static final int TICK_SPEED_MS = 20;
+    public static final int TICK_SPEED_MS = 10;
 
     /**
      * The entry point for the application. This method schedules the creation

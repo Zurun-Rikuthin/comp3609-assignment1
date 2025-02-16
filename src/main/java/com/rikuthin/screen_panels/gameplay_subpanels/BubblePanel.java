@@ -7,9 +7,11 @@ import java.awt.Graphics2D;
 import java.awt.Point;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.awt.event.MouseMotionListener;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.swing.JLabel;
 import javax.swing.JPanel;
 
 import com.rikuthin.GameFrame;
@@ -30,7 +32,7 @@ public class BubblePanel extends JPanel {
      * A list of bubbles contained within the panel
      */
     private final List<Bubble> bubbles;
-
+    private final JLabel mouseLocationLabel;
     /**
      * Constructs the BubblePanel, initializing the list of bubbles and setting
      * up the background and mouse listener for bubble shooting.
@@ -41,6 +43,29 @@ public class BubblePanel extends JPanel {
         // Set panel background color and preferred size.
         setBackground(new Color(200, 170, 170));
         setPreferredSize(new Dimension(GameFrame.FRAME_WIDTH, 590));
+
+        // Create and initialize the label to display mouse coordinates
+        mouseLocationLabel = new JLabel();
+        mouseLocationLabel.setBounds(10, 10, 200, 30);  // Set position of the label
+        this.add(mouseLocationLabel);
+
+        // Add the MouseMotionListener directly to the panel to track mouse movement
+        this.addMouseMotionListener(new MouseMotionListener() {
+            @Override
+            public void mouseMoved(MouseEvent e) {
+                // Get the mouse position
+                int mouseX = e.getX();
+                int mouseY = e.getY();
+
+                // Update the label text with the new mouse coordinates
+                mouseLocationLabel.setText("Mouse Location: (" + mouseX + ", " + mouseY + ")");
+            }
+
+            @Override
+            public void mouseDragged(MouseEvent e) {
+                // Optional: handle mouse dragging (not needed for this task)
+            }
+        });
 
         // Mouse click listener to shoot bubbles when clicked.
         addMouseListener(new MouseAdapter() {
