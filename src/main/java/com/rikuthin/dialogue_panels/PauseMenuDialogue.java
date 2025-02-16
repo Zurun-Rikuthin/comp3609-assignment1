@@ -82,7 +82,6 @@ public class PauseMenuDialogue extends Dialog {
         System.out.println("Main Menu button clicked.");
     }
 
-    @SuppressWarnings(value = "unused")
     private void onQuitGame(ActionEvent e) {
         System.exit(0);
     }

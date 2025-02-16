@@ -15,8 +15,7 @@ import javax.swing.JPanel;
 import javax.swing.SwingConstants;
 
 import com.rikuthin.GameFrame;
-import static com.rikuthin.GameFrame.GAMEPLAY_PANEL_NAME;
-import com.rikuthin.GameManager;
+import com.rikuthin.GameFrame.PanelName;
 import static com.rikuthin.utility.ButtonUtil.createButton;
 
 public class MainMenuScreenPanel extends ScreenPanel {
@@ -25,11 +24,12 @@ public class MainMenuScreenPanel extends ScreenPanel {
     private final JPanel buttonPanel;
     private final JPanel centreWrapper;
     private final JPanel titlePanel;
-    // private final JPanel muteButtonPanel;
+    
+    // TODO
     // private final JToggleButton muteMusicButton;
 
-    public MainMenuScreenPanel(GameFrame gameFrame, GameManager gameManager) {
-        super(gameFrame, gameManager);
+    public MainMenuScreenPanel(GameFrame gameFrame) {
+        super(gameFrame);
         setBackground(new Color(87, 73, 100));
         setLayout(new BorderLayout());
 
@@ -59,6 +59,7 @@ public class MainMenuScreenPanel extends ScreenPanel {
         final ActionListener[] actions = {this::onStartGame, this::onHowToPlay, this::onSettings, this::onHighscores, this::onQuitGame};
 
         for (int i = 0; i < labels.length; i++) {
+            // Only enable START GAME and QUIT GAME for now
             JButton button = createButton(labels[i], buttonFont, 180, 40, i != 1 && i != 2 && i != 3, actions[i]);
             buttonPanel.add(button);
             buttonPanel.add(Box.createVerticalStrut(10));
@@ -80,13 +81,14 @@ public class MainMenuScreenPanel extends ScreenPanel {
     }
 
     // TODO
-    private void onMuteMusic(ActionEvent e) {
-        System.out.println("Mute Button not implemented");
-    }
+    // private void onMuteMusic(ActionEvent e) {
+    //     System.out.println("Mute Button not implemented");
+    // }
 
-    // TODO
+    
     private void onStartGame(ActionEvent e) {
-        gameFrame.switchToPanel(GAMEPLAY_PANEL_NAME);
+        gameFrame.switchToPanel(PanelName.GAMEPLAY);
+        gameFrame.initializeGameManager();
         gameFrame.getGameManager().startGame();
     }
 

@@ -34,7 +34,7 @@ public class BubblePanel extends JPanel {
         addMouseMotionListener(new MouseMotionListener() {
             @Override
             public void mouseMoved(MouseEvent e) {
-                GameManager.notifyMousePosition(new Point(e.getX(), e.getY()));
+                // GameManager.notifyMousePosition(new Point(e.getX(), e.getY()));
 
                 if (blasterPanel != null) {
                     blasterPanel.updateMouseCoords(mousePointerCoord.x, mousePointerCoord.y);

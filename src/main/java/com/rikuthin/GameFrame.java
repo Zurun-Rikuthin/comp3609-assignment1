@@ -7,21 +7,24 @@ import javax.swing.WindowConstants;
 
 import com.rikuthin.screen_panels.GameplayScreenPanel;
 import com.rikuthin.screen_panels.MainMenuScreenPanel;
-import com.rikuthin.screen_panels.gameplay_subpanels.StatusPanel;
 
 public final class GameFrame extends JFrame {
+    public enum PanelName {
+        MAIN_MENU,
+        GAMEPLAY
+    }
 
     public static final int FRAME_WIDTH = 600;
     public static final int FRAME_HEIGHT = 800;
 
-    public static final String MAIN_MENU_PANEL_NAME = "Main Menu";
-    public static final String GAMEPLAY_PANEL_NAME = "Gameplay";
     public static final String BODY_TYPEFACE = "Cooper Black";
 
     private final MainMenuScreenPanel mainMenuScreenPanel;
     private final GameplayScreenPanel gameplayScreenPanel;
     private final CardLayout cardLayout;
-    private GameManager gameManager;  // Reference to GameManager
+
+    // Should only be initialised once the "START GAME" button in the main menu is pressed
+    private GameManager gameManager;
 
     public GameFrame() {
         setTitle("Untitled Bubble Shooter");
@@ -35,11 +38,31 @@ public final class GameFrame extends JFrame {
         mainMenuScreenPanel = new MainMenuScreenPanel(this);
         gameplayScreenPanel = new GameplayScreenPanel(this);
 
-        add(mainMenuScreenPanel, MAIN_MENU_PANEL_NAME);
-        add(gameplayScreenPanel, GAMEPLAY_PANEL_NAME);
+        add(mainMenuScreenPanel, PanelName.MAIN_MENU.name());
+        add(gameplayScreenPanel, PanelName.GAMEPLAY.name());
 
-        switchToPanel(MAIN_MENU_PANEL_NAME);
+        switchToPanel(PanelName.MAIN_MENU);
         setVisible(true);
+    }
+
+    public void switchToPanel(final PanelName panelName) {
+        if (panelName != null) {
+            cardLayout.show(getContentPane(), panelName.name());
+        } else {
+            System.err.println("Warning: Attempted to switch to an invalid panel: " + panelName);
+        }
+    }
+
+    /**
+     * Creates a new GameManager instance (if one does not yet exist); DOES NOT START THE GAME
+     */
+    public void initializeGameManager() {
+        if (gameManager == null) {
+            gameManager = new GameManager(
+                    gameplayScreenPanel.getBlasterPanel(),
+                    gameplayScreenPanel.getBubblePanel()
+            );
+        }
     }
 
     public GameManager getGameManager() {
@@ -54,15 +77,6 @@ public final class GameFrame extends JFrame {
         return gameplayScreenPanel;
     }
 
-    // Method to set the GameManager from the App
-    public void setGameManager(GameManager gameManager) {
-        this.gameManager = gameManager;
-    }
-
-    public void switchToPanel(final String panelName) {
-        cardLayout.show(getContentPane(), panelName);
-    }
-
     public boolean isGameplayActive() {
         return gameplayScreenPanel.isVisible();
     }
@@ -71,15 +85,10 @@ public final class GameFrame extends JFrame {
         return mainMenuScreenPanel.isVisible();
     }
 
-    public StatusPanel getStatusPanel() {
-        if (isGameplayActive()) {
-            return gameplayScreenPanel.getStatusPanel();
-        }
-        return null;
-    }
-
-    // Method to start the game (could be triggered by a button or game state change)
     public void startGame() {
+        if (gameManager == null) {
+            initializeGameManager();
+        }
         gameManager.startGame();
     }
 }

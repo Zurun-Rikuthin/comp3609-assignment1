@@ -5,16 +5,13 @@ import java.awt.Dimension;
 import javax.swing.JPanel;
 
 import com.rikuthin.GameFrame;
-import com.rikuthin.GameManager;
 
 public abstract class ScreenPanel extends JPanel {
 
     protected final GameFrame gameFrame;
-    protected final GameManager gameManager;
 
-    protected ScreenPanel(GameFrame gameFrame, GameManager gameManager) {
+    protected ScreenPanel(GameFrame gameFrame) {
         this.gameFrame = gameFrame;
-        this.gameManager = gameManager;
         Dimension panelSize = new Dimension(GameFrame.FRAME_WIDTH, GameFrame.FRAME_HEIGHT);
 
         setPreferredSize(panelSize);
