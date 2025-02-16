@@ -143,6 +143,8 @@ public class Bubble extends Ellipse2D.Double implements Runnable {
                 break;
             }
         }
+
+        GameManager.getInstance().onBubbleMovementComplete();
     }
 
     /**

@@ -47,7 +47,7 @@ public class BlasterPanel extends JPanel {
 
         // Configure the blaster.
         final int shotSize = 30;
-        final double shotSpeed = 10;
+        final double shotSpeed = 15;
         final int blasterX = (GameFrame.FRAME_WIDTH / 2) - (shotSize / 2);
         final int blasterY = shotSize;
         blaster = new Blaster(blasterX, blasterY, shotSize, shotSpeed, new Color(2, 52, 54));

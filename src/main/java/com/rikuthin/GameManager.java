@@ -2,7 +2,6 @@ package com.rikuthin;
 
 import java.awt.Color;
 import java.awt.Point;
-import java.util.OptionalInt;
 
 import com.rikuthin.game_objects.Blaster;
 import com.rikuthin.game_objects.Bubble;
@@ -10,20 +9,20 @@ import com.rikuthin.screen_panels.gameplay_subpanels.BlasterPanel;
 import com.rikuthin.screen_panels.gameplay_subpanels.BubblePanel;
 import com.rikuthin.utility.BubbleColour;
 
-public class GameManager {
+public class GameManager implements BubbleMovementListener {
 
     private static GameManager instance;
 
-    private Bubble activeBubble;
     private BlasterPanel blasterPanel;
     private BubblePanel bubblePanel;
-    private OptionalInt remainingBubbles; // Explicitly track uninitialized state
+    private int remainingBubbles;
     private boolean canShootBlaster;
     private boolean gameActive;
 
     private GameManager() {
-        remainingBubbles = OptionalInt.empty(); // Indicates game hasn't started
+        remainingBubbles = 0;
         gameActive = false;
+        canShootBlaster = false;
     }
 
     /**
@@ -41,10 +40,9 @@ public class GameManager {
     /**
      * Returns the remaining number of bubbles left that the player can shoot.
      *
-     * @return OptionalInt containing remaining bubbles, or empty if startGame()
-     * hasn't been called.
+     * @return The remaining number of bubbles
      */
-    public OptionalInt getRemainingBubbles() {
+    public int getRemainingBubbles() {
         return remainingBubbles;
     }
 
@@ -71,10 +69,11 @@ public class GameManager {
         if (blasterPanel == null || bubblePanel == null) {
             throw new IllegalStateException("Error: Game cannot start. BlasterPanel and BubblePanel must be set first.");
         }
-        
-        remainingBubbles = OptionalInt.of(50);
-        blasterPanel.updateRemainingBubblesCounter(50);
+
+        remainingBubbles = 100;
+        blasterPanel.updateRemainingBubblesCounter(remainingBubbles);
         gameActive = true;
+        canShootBlaster = true;
     }
 
     /**
@@ -85,22 +84,31 @@ public class GameManager {
      */
     public void shootBubble(Point target) {
         if (!gameActive) {
-            System.err.println("Error: Cannot shoot bubble. Game has not started.");
-            return;
+            throw new IllegalStateException("Error: Cannot shoot bubble. Game has not started.");
         }
+        
+        if (remainingBubbles > 0) {
+            if(canShootBlaster) {
+                canShootBlaster = false;
 
-        remainingBubbles.ifPresent(bubbleCount -> {
-            if (bubbleCount > 0) {
                 Blaster blaster = blasterPanel.getBlaster();
                 Bubble newBubble = blaster.shootBubble(target, nextBubbleColour());
+                
                 bubblePanel.addBubble(newBubble);
-
-                remainingBubbles = OptionalInt.of(bubbleCount - 1);
-                blasterPanel.updateRemainingBubblesCounter(bubbleCount - 1);
+                
+                remainingBubbles--;
+                blasterPanel.updateRemainingBubblesCounter(remainingBubbles);
             } else {
-                System.err.println("Warning: No more bubbles left to shoot.");
+                System.err.println("Warning: Bubble already fired. Wait for it to stop moving.");
             }
-        });
+        } else {
+            System.err.println("Warning: No more bubbles left to shoot.");
+        }
+    }
+
+    @Override
+    public void onBubbleMovementComplete() {
+        canShootBlaster = true;
     }
 
     /**
@@ -110,8 +118,9 @@ public class GameManager {
      */
     private Color nextBubbleColour() {
         if (!gameActive) {
-            return null;
+            throw new IllegalStateException("Cannot select color when game is not active.");
         }
         return BubbleColour.getRandomColour();
     }
+    
 }
