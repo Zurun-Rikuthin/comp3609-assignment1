@@ -6,7 +6,7 @@ import java.util.concurrent.ThreadLocalRandom;
 /**
  * Represents a set of predefined bubble colours for the game.
  */
-public enum BubbleColour {
+public enum RandomColour {
     MURRAY_RED(new Color(87, 0, 58)),
     PANTONE_ORANGE(new Color(242, 100, 25)),
     HUNYADI_YELLOW(new Color(246, 174, 45)),
@@ -15,44 +15,35 @@ public enum BubbleColour {
     ULTRAVIOLET(new Color(77, 83, 130)),
     MAUVINE_PURPLE(new Color(144, 4, 159));
 
-    private static final BubbleColour[] VALUES = values(); // Cached values for efficiency
+    private static final RandomColour[] VALUES = values(); // Cached values for efficiency
     private static final int SIZE = VALUES.length;
 
     private final Color colour;
 
     /**
-     * Constructs a BubbleColour enum with a specific colour.
+     * Constructs a RandomColour enum with a specific colour.
      *
-     * @param colour The colour associated with this BubbleColour.
+     * @param colour The colour associated with this RandomColour.
      */
-    BubbleColour(Color colour) {
+    RandomColour(Color colour) {
         this.colour = colour;
     }
 
     /**
-     * Returns the colour associated with this BubbleColour.
+     * Returns the colour associated with this RandomColour.
      *
-     * @return The colour of this bubble.
+     * @return The selected colour.
      */
     public Color getColour() {
         return colour;
     }
 
     /**
-     * Returns a randomly selected BubbleColour.
-     *
-     * @return A random BubbleColour.
-     */
-    public static BubbleColour getRandomBubbleColour() {
-        return VALUES[ThreadLocalRandom.current().nextInt(SIZE)];
-    }
-
-    /**
-     * Returns a randomly selected colour from the available BubbleColours.
+     * Returns a randomly selected colour.
      *
      * @return A random colour.
      */
     public static Color getRandomColour() {
-        return getRandomBubbleColour().getColour();
+        return VALUES[ThreadLocalRandom.current().nextInt(SIZE)].getColour();
     }
 }

@@ -7,7 +7,7 @@ import com.rikuthin.game_objects.Blaster;
 import com.rikuthin.game_objects.Bubble;
 import com.rikuthin.screen_panels.gameplay_subpanels.BlasterPanel;
 import com.rikuthin.screen_panels.gameplay_subpanels.BubblePanel;
-import com.rikuthin.utility.BubbleColour;
+import com.rikuthin.utility.RandomColour;
 
 public class GameManager {
 
@@ -72,6 +72,7 @@ public class GameManager {
 
         remainingBubbles = 100;
         blasterPanel.updateRemainingBubblesCounter(remainingBubbles);
+        bubblePanel.initialiseWalls();
         gameActive = true;
         canShootBlaster = true;
     }
@@ -92,7 +93,7 @@ public class GameManager {
                 canShootBlaster = false;
 
                 Blaster blaster = blasterPanel.getBlaster();
-                Bubble newBubble = blaster.shootBubble(target, nextBubbleColour());
+                Bubble newBubble = blaster.shootBubble(target, nextRandomColour());
                 
                 bubblePanel.addBubble(newBubble);
                 
@@ -113,13 +114,13 @@ public class GameManager {
     /**
      * Chooses the next bubble's color randomly.
      *
-     * @return The next BubbleColour.
+     * @return The next random colour.
      */
-    private Color nextBubbleColour() {
+    private Color nextRandomColour() {
         if (!gameActive) {
             throw new IllegalStateException("Cannot select color when game is not active.");
         }
-        return BubbleColour.getRandomColour();
+        return RandomColour.getRandomColour();
     }
     
 }

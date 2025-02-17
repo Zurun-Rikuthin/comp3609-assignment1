@@ -10,6 +10,7 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseMotionListener;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.ThreadLocalRandom;
 
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -18,6 +19,7 @@ import com.rikuthin.GameFrame;
 import com.rikuthin.GameManager;
 import com.rikuthin.game_objects.Bubble;
 import com.rikuthin.game_objects.Wall;
+import com.rikuthin.utility.RandomColour;
 
 /**
  * The BubblePanel is responsible for displaying the bubbles in the game and
@@ -35,6 +37,7 @@ public class BubblePanel extends JPanel {
     private final List<Bubble> bubbles;
     private final List<Wall> walls;
     private final JLabel mouseLocationLabel;
+
     /**
      * Constructs the BubblePanel, initializing the list of bubbles and setting
      * up the background and mouse listener for bubble shooting.
@@ -50,6 +53,7 @@ public class BubblePanel extends JPanel {
         // Create and initialize the label to display mouse coordinates
         mouseLocationLabel = new JLabel();
         mouseLocationLabel.setBounds(10, 10, 200, 30);  // Set position of the label
+        mouseLocationLabel.setForeground(Color.WHITE);
         this.add(mouseLocationLabel);
 
         // Add the MouseMotionListener directly to the panel to track mouse movement
@@ -82,6 +86,27 @@ public class BubblePanel extends JPanel {
             }
         });
     }
+
+    public void initialiseWalls() { 
+        int panelWidth = Math.max(getWidth(), 150); // Ensure reasonable width
+        int numWalls = ThreadLocalRandom.current().nextInt(10) + 1;
+    
+        for (int i = 0; i < numWalls; i++) {
+            int x = ThreadLocalRandom.current().nextInt(panelWidth); // Full width range
+    
+            int y = ThreadLocalRandom.current().nextInt(201) + 200; // Random Y in [200, 400]
+    
+            int wallWidth = ThreadLocalRandom.current().nextInt(71) + 30; // Random width [30, 100]
+            int wallHeight = ThreadLocalRandom.current().nextInt(51) + 30; // Random height [30, 80]
+    
+            // Ensure walls fit within the panel width
+            x = Math.min(x, panelWidth - wallWidth);
+    
+            Wall newWall = new Wall(x, y, wallWidth, wallHeight, RandomColour.getRandomColour());
+            walls.add(newWall);
+        }
+    }
+    
 
     /**
      * Adds a bubble to the panel and triggers a repaint to display it.
@@ -132,5 +157,5 @@ public class BubblePanel extends JPanel {
         for (Bubble bubble : bubbles) {
             bubble.draw(g2);
         }
-    }
+    }    
 }

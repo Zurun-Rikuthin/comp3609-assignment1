@@ -81,11 +81,11 @@ public class Wall extends Rectangle2D.Double implements Runnable {
      * Still a little buggy
      */
     public void move() {
-        BubblePanel wallPanel = GameManager.getInstance().getBubblePanel();
-        if (!wallPanel.isVisible()) {
+        BubblePanel bubblePanel = GameManager.getInstance().getBubblePanel();
+        if (!bubblePanel.isVisible()) {
             return;
         }
-        final Dimension panelSize = wallPanel.getSize();
+        final Dimension panelSize = bubblePanel.getSize();
         final double radians = Math.toRadians(bearing.getDegrees());
 
         double nextX = x + speed * Math.cos(radians);
@@ -123,7 +123,7 @@ public class Wall extends Rectangle2D.Double implements Runnable {
         }
         x = nextX;
 
-        javax.swing.SwingUtilities.invokeLater(wallPanel::repaint);  // Thread-safe repaint
+        javax.swing.SwingUtilities.invokeLater(bubblePanel::repaint);  // Thread-safe repaint
     }
 
     /**

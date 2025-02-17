@@ -25,7 +25,6 @@ public class BlasterPanel extends JPanel {
 
     private final JLabel remainingBubblesCounterLabel;
     private final JPanel remainingBubblesPanel;
-    private final JPanel heldBubblesPanel;
     private final Blaster blaster;
 
     /**
@@ -39,7 +38,6 @@ public class BlasterPanel extends JPanel {
         // Initialise placeholder panels for future enhancements.
         remainingBubblesPanel = new JPanel();
         remainingBubblesPanel.setLayout(new BoxLayout(remainingBubblesPanel, BoxLayout.Y_AXIS));
-        heldBubblesPanel = new JPanel();
 
         // Initialise and add the remaining bubbles counter label.
         remainingBubblesCounterLabel = new JLabel();
