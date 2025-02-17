@@ -47,7 +47,7 @@ public class MainMenuScreenPanel extends ScreenPanel {
         titlePanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
         titlePanel.setOpaque(false);
 
-        titleLabel = new JLabel("Untitled Bubble Shooter", SwingConstants.CENTER);
+        titleLabel = new JLabel("Thread the Needle", SwingConstants.CENTER);
         titleLabel.setFont(new Font(GameFrame.BODY_TYPEFACE, Font.BOLD, 36));
         titleLabel.setForeground(Color.WHITE);
 

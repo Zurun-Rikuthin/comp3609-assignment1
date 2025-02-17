@@ -94,10 +94,10 @@ public class BubblePanel extends JPanel {
         for (int i = 0; i < numWalls; i++) {
             int x = ThreadLocalRandom.current().nextInt(panelWidth); // Full width range
     
-            int y = ThreadLocalRandom.current().nextInt(201) + 200; // Random Y in [200, 400]
+            int y = ThreadLocalRandom.current().nextInt(301) + 100; // Random Y in [100, 400]
     
-            int wallWidth = ThreadLocalRandom.current().nextInt(71) + 30; // Random width [30, 100]
-            int wallHeight = ThreadLocalRandom.current().nextInt(51) + 30; // Random height [30, 80]
+            int wallWidth = ThreadLocalRandom.current().nextInt(51) + 30; // Random width [30, 80]
+            int wallHeight = ThreadLocalRandom.current().nextInt(21) + 30; // Random height [30, 50]
     
             // Ensure walls fit within the panel width
             x = Math.min(x, panelWidth - wallWidth);
