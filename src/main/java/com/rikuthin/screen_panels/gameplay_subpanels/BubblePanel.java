@@ -104,6 +104,8 @@ public class BubblePanel extends JPanel {
     
             Wall newWall = new Wall(x, y, wallWidth, wallHeight, RandomColour.getRandomColour());
             walls.add(newWall);
+
+            new Thread(newWall).start();
         }
     }
     

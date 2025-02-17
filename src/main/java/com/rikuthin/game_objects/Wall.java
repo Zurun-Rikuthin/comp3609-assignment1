@@ -6,6 +6,7 @@ import java.awt.Graphics2D;
 import java.awt.geom.Rectangle2D;
 import java.util.List;
 import java.util.Objects;
+import java.util.concurrent.ThreadLocalRandom;
 
 import com.rikuthin.App;
 import com.rikuthin.GameManager;
@@ -23,9 +24,10 @@ public class Wall extends Rectangle2D.Double implements Runnable {
     public static final double SIZE = 30; // Size of the wall in pixels
 
     private final Color colour;  // Colour of the wall
+    private final double speed;        // Movement speed (in pixels per tick)
+
     private boolean isMoving;    // Whether the wall should move
     private Bearing2D bearing;   // Direction of movement (bearing)
-    private double speed;        // Movement speed (in pixels per tick)
 
     /**
      * Constructs a new Bubble.
@@ -43,9 +45,15 @@ public class Wall extends Rectangle2D.Double implements Runnable {
         }
 
         this.colour = colour;
-        this.isMoving = false;
-        this.bearing = new Bearing2D(0);
-        this.speed = 0;
+        this.isMoving = true;
+        this.speed = ThreadLocalRandom.current().nextInt(11) + 5.0;
+
+        final boolean movesLeft = ThreadLocalRandom.current().nextBoolean();
+        if (movesLeft) {
+            this.bearing = new Bearing2D(0, 0, 100, 0);
+        } else {
+            this.bearing = new Bearing2D(100, 0, 0, 0);
+        }
     }
 
     public boolean isMoving() {
@@ -64,21 +72,10 @@ public class Wall extends Rectangle2D.Double implements Runnable {
         this.isMoving = isMoving;
     }
 
-    public void setBearing(final Bearing2D bearing) {
-        this.bearing = bearing;
-    }
-
-    public void setSpeed(final double speed) {
-        this.speed = Math.abs(speed);
-    }
-
     /**
      * Moves the wall based on its bearing and speed.
      *
-     * The wall bounces off the sides of the panel edges and stops either when
-     * hitting another wall or the top of the panel.
-     * 
-     * Still a little buggy
+     * The wall bounces off the sides of the panel edges and phases through other walls
      */
     public void move() {
         BubblePanel bubblePanel = GameManager.getInstance().getBubblePanel();
@@ -89,33 +86,6 @@ public class Wall extends Rectangle2D.Double implements Runnable {
         final double radians = Math.toRadians(bearing.getDegrees());
 
         double nextX = x + speed * Math.cos(radians);
-        double nextY = y - speed * Math.sin(radians); // Inverted for screen coordinates        
-
-        System.out.println(String.format("Original nextY: %f", nextY));
-        // Check for collision with another wall
-        if (checkCollision(nextX, nextY)) {
-            isMoving = false;
-            return;
-        }
-
-        // Handle Y-axis bouncing or stopping at the top
-        if (nextY < 0) {
-            y = 0;
-            isMoving = false;
-            System.out.println(String.format("nextY in if: %f", nextY));
-            return;
-        } else {
-            System.out.println(String.format("nextY in else before if: %f", nextY));
-            if (nextY - height > panelSize.height) {
-                bearing.setDegrees(360 - bearing.getDegrees());  // Reverse Y direction
-                nextY = panelSize.height - height;
-                System.out.println(String.format("nextY in else in if: %f", nextY));
-            }
-            y = nextY;
-            System.out.println(String.format("nextY: in else after if %f", nextY));
-        }
-
-        System.out.println("\n\n");
         // Handle X-axis bouncing
         if (nextX < 0 || nextX + width > panelSize.width) {
             bearing.setDegrees(180 - bearing.getDegrees());  // Reverse X direction
@@ -135,6 +105,7 @@ public class Wall extends Rectangle2D.Double implements Runnable {
         g2.setColor(colour);
         g2.fill(this);
         g2.setColor(Color.BLACK);
+
         g2.draw(this);
     }
 
