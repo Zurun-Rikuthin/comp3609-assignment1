@@ -9,7 +9,7 @@ import com.rikuthin.screen_panels.gameplay_subpanels.BlasterPanel;
 import com.rikuthin.screen_panels.gameplay_subpanels.BubblePanel;
 import com.rikuthin.utility.BubbleColour;
 
-public class GameManager implements BubbleMovementListener {
+public class GameManager {
 
     private static GameManager instance;
 
@@ -106,7 +106,6 @@ public class GameManager implements BubbleMovementListener {
         }
     }
 
-    @Override
     public void onBubbleMovementComplete() {
         canShootBlaster = true;
     }

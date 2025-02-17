@@ -17,6 +17,7 @@ import javax.swing.JPanel;
 import com.rikuthin.GameFrame;
 import com.rikuthin.GameManager;
 import com.rikuthin.game_objects.Bubble;
+import com.rikuthin.game_objects.Wall;
 
 /**
  * The BubblePanel is responsible for displaying the bubbles in the game and
@@ -32,6 +33,7 @@ public class BubblePanel extends JPanel {
      * A list of bubbles contained within the panel
      */
     private final List<Bubble> bubbles;
+    private final List<Wall> walls;
     private final JLabel mouseLocationLabel;
     /**
      * Constructs the BubblePanel, initializing the list of bubbles and setting
@@ -39,6 +41,7 @@ public class BubblePanel extends JPanel {
      */
     public BubblePanel() {
         this.bubbles = new ArrayList<>();
+        this.walls = new ArrayList<>();
 
         // Set panel background color and preferred size.
         setBackground(new Color(200, 170, 170));
@@ -85,13 +88,27 @@ public class BubblePanel extends JPanel {
      *
      * @param bubble The bubble to add to the panel.
      */
-    public void addBubble(Bubble bubble) {
+    public void addBubble(final Bubble bubble) {
         bubbles.add(bubble);
+        repaint(); // Repaint to show the new bubble.
+    }
+
+    /**
+     * Adds a wall to the panel and triggers a repaint to display it.
+     *
+     * @param wall The wall to add to the panel.
+     */
+    public void addWall(final Wall wall) {
+        walls.add(wall);
         repaint(); // Repaint to show the new bubble.
     }
 
     public List<Bubble> getBubbles() {
         return bubbles;
+    }
+
+    public List<Wall> getWalls() {
+        return walls;
     }
 
     /**
@@ -105,6 +122,11 @@ public class BubblePanel extends JPanel {
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
         Graphics2D g2 = (Graphics2D) g;
+
+        // Draw each wall in the list.
+        for (Wall wall : walls) {
+            wall.draw(g2);
+        }
 
         // Draw each bubble in the list.
         for (Bubble bubble : bubbles) {
