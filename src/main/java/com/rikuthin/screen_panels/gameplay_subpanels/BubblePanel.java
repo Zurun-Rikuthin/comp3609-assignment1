@@ -130,6 +130,16 @@ public class BubblePanel extends JPanel {
         repaint(); // Repaint to show the new bubble.
     }
 
+    /**
+     * Adds a bubble to the panel and triggers a repaint to display it.
+     *
+     * @param bubble The bubble to add to the panel.
+     */
+    public void removeBubble(final Bubble bubble) {
+        bubbles.remove(bubble);
+        repaint(); // Repaint to show the new bubble.
+    }
+
     public List<Bubble> getBubbles() {
         return bubbles;
     }

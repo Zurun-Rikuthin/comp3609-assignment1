@@ -46,7 +46,7 @@ public class Wall extends Rectangle2D.Double implements Runnable {
 
         this.colour = colour;
         this.isMoving = true;
-        this.speed = ThreadLocalRandom.current().nextInt(11) + 5.0;
+        this.speed = ThreadLocalRandom.current().nextInt(9) + 3.0;
 
         final boolean movesLeft = ThreadLocalRandom.current().nextBoolean();
         if (movesLeft) {

@@ -5,7 +5,6 @@ import java.awt.Dimension;
 import java.awt.Graphics2D;
 import java.awt.geom.Ellipse2D;
 import java.util.List;
-import java.util.Objects;
 
 import com.rikuthin.App;
 import com.rikuthin.GameManager;
@@ -15,7 +14,7 @@ import com.rikuthin.utility.Bearing2D;
 /**
  * Represents a bubble that moves within a JPanel. The bubble moves along a
  * specified bearing (angle in degrees) at a defined speed (pixels per tick) and
- * bounces off the edges of the panel.
+ * bounces off the edges and walls, stopping at the roof.
  */
 public class Bubble extends Ellipse2D.Double implements Runnable {
 
@@ -29,10 +28,9 @@ public class Bubble extends Ellipse2D.Double implements Runnable {
     /**
      * Constructs a new Bubble.
      *
-     * @param initialX The initial x-coordinate of the bubble.
-     * @param initialY The initial y-coordinate of the bubble.
-     * @param SIZE The diameter of the bubble.
-     * @param colour The color of the bubble.
+     * @param initialX The initial x-coordinate.
+     * @param initialY The initial y-coordinate.
+     * @param colour The color.
      */
     public Bubble(final int initialX, final int initialY, final Color colour) {
         super(initialX, initialY, SIZE, SIZE);
@@ -73,26 +71,23 @@ public class Bubble extends Ellipse2D.Double implements Runnable {
 
     /**
      * Moves the bubble based on its bearing and speed.
-     *
-     * The bubble bounces off the sides of the panel edges and stops either when
-     * hitting another bubble or the top of the panel.
-     * 
-     * Still a little buggy
      */
     public void move() {
         BubblePanel bubblePanel = GameManager.getInstance().getBubblePanel();
         if (!bubblePanel.isVisible()) {
             return;
         }
+
         final Dimension panelSize = bubblePanel.getSize();
         final double radians = Math.toRadians(bearing.getDegrees());
 
         double nextX = x + speed * Math.cos(radians);
-        double nextY = y - speed * Math.sin(radians); // Inverted for screen coordinates        
+        double nextY = y - speed * Math.sin(radians); // Inverted for screen coordinates
 
-        System.out.println(String.format("Original nextY: %f", nextY));
-        // Check for collision with another bubble
-        if (checkCollision(nextX, nextY)) {
+        // Break if colliding with a wall
+        if (checkWallCollision()) {
+            bubblePanel.getBubbles().remove(this);
+            bubblePanel.repaint();
             isMoving = false;
             return;
         }
@@ -101,20 +96,15 @@ public class Bubble extends Ellipse2D.Double implements Runnable {
         if (nextY < 0) {
             y = 0;
             isMoving = false;
-            // System.out.println(String.format("nextY in if: %f", nextY));
             return;
         } else {
-            // System.out.println(String.format("nextY in else before if: %f", nextY));
             if (nextY - height > panelSize.height) {
                 bearing.setDegrees(360 - bearing.getDegrees());  // Reverse Y direction
                 nextY = panelSize.height - height;
-                // System.out.println(String.format("nextY in else in if: %f", nextY));
             }
             y = nextY;
-            // System.out.println(String.format("nextY: in else after if %f", nextY));
         }
 
-        System.out.println("\n\n");
         // Handle X-axis bouncing
         if (nextX < 0 || nextX + width > panelSize.width) {
             bearing.setDegrees(180 - bearing.getDegrees());  // Reverse X direction
@@ -126,9 +116,7 @@ public class Bubble extends Ellipse2D.Double implements Runnable {
     }
 
     /**
-     * Draws the bubble onto the provided Graphics2D context.
-     *
-     * @param g2 The Graphics2D object used for rendering.
+     * Draws the bubble.
      */
     public void draw(final Graphics2D g2) {
         g2.setColor(colour);
@@ -138,97 +126,33 @@ public class Bubble extends Ellipse2D.Double implements Runnable {
     }
 
     /**
-     * Runs the bubble's movement logic in a loop, moving the bubble
-     * continuously while the isMoving flag is true.
+     * Runs the bubble's movement logic.
      */
     @Override
     public void run() {
         while (isMoving) {
             move();
             try {
-                Thread.sleep(App.TICK_SPEED_MS); // Controls the movement speed
+                Thread.sleep(App.TICK_SPEED_MS);
             } catch (InterruptedException e) {
-                Thread.currentThread().interrupt();  // Restore interrupted state
+                Thread.currentThread().interrupt();
                 break;
             }
         }
-
         GameManager.getInstance().onBubbleMovementComplete();
     }
 
     /**
-     * Checks if this bubble is equal to another object. Two bubbles are
-     * considered equal if they have the same position, color, movement status,
-     * bearing, and speed.
-     *
-     * @param obj The object to compare with.
-     * @return {@code true} if the bubbles are equal, otherwise {@code false}.
+     * Checks for collision with walls.
      */
-    @Override
-    public boolean equals(final Object obj) {
-        if (this == obj) {
-            return true;
-        }
-        if (!(obj instanceof Bubble)) {
-            return false;
-        }
-        Bubble other = (Bubble) obj;
-        return java.lang.Double.compare(x, other.x) == 0
-                && java.lang.Double.compare(y, other.y) == 0
-                && colour.equals(other.colour)
-                && isMoving == other.isMoving
-                && bearing.equals(other.bearing)
-                && java.lang.Double.compare(speed, other.speed) == 0;
-    }
+    private boolean checkWallCollision() {
+        List<Wall> walls = GameManager.getInstance().getBubblePanel().getWalls();
 
-    /**
-     * Computes the hash code for this bubble using its position, color,
-     * movement status, bearing, and speed.
-     *
-     * @return The hash code of the bubble.
-     */
-    @Override
-    public int hashCode() {
-        return Objects.hash(x, y, colour, isMoving, bearing, speed);
-    }
-
-    /**
-     * Checks if moving into a new (x, y) poisiton would collide with another
-     * bubble
-     *
-     * @param nextX the next x position (given the movement is successful)
-     * @param nextY the next y position (given the movement is successful)
-     *
-     * @return Whether the bubbles collide or not
-     */
-    private boolean checkCollision(final double nextX, final double nextY) {
-        List<Bubble> bubbles = GameManager.getInstance().getBubblePanel().getBubbles(); // Retrieve existing bubbles
-
-        if (bubbles.isEmpty()) {
-            return false; // No bubbles to check
-        }
-
-        final double thisRadius = width / 2.0;
-        final double thisCentreX = nextX + thisRadius;
-        final double thisCentreY = nextY + thisRadius;
-
-        for (Bubble other : bubbles) {
-            if (other.equals(this)) {
-                continue; // Skip self-comparison
-            }
-
-            final double otherRadius = other.width / 2.0;
-            final double otherCentreX = other.getCenterX();
-            final double otherCentreY = other.getCenterY();
-
-            final double distanceSquared = Math.pow(thisCentreX - otherCentreX, 2) + Math.pow(thisCentreY - otherCentreY, 2);
-            final double radiusSumSquared = Math.pow(thisRadius + otherRadius, 2);
-
-            if (distanceSquared <= radiusSumSquared) {
-                return true; // Collision detected
+        for (Wall wall : walls) {
+            if (intersects(wall)) {
+                return true;
             }
         }
-
-        return false; // No collision
+        return false;
     }
 }
