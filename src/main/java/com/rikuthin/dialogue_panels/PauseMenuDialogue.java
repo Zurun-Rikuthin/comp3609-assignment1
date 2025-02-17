@@ -75,7 +75,7 @@ public class PauseMenuDialogue extends Dialog {
             public void windowClosing(WindowEvent e) {
                 super.windowClosing(e);
                 onResume(onResumeCallback);  // Ensure callback is called even if dialog is closed
-                setVisible(false);
+                dispose();
             }
         });
     }
@@ -88,7 +88,7 @@ public class PauseMenuDialogue extends Dialog {
      */
     private void onResume(Runnable onResumeCallback) {
         onResumeCallback.run();
-        setVisible(false); // Close the dialog after resuming the game
+        dispose(); // Close the dialog after resuming the game
     }
 
     /**

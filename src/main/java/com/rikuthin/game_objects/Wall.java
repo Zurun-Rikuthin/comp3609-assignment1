@@ -46,7 +46,7 @@ public class Wall extends Rectangle2D.Double implements Runnable {
 
         this.colour = colour;
         this.isMoving = true;
-        this.speed = ThreadLocalRandom.current().nextInt(9) + 3.0;
+        this.speed = ThreadLocalRandom.current().nextInt(9) + 1.0;
 
         final boolean movesLeft = ThreadLocalRandom.current().nextBoolean();
         if (movesLeft) {
@@ -75,7 +75,8 @@ public class Wall extends Rectangle2D.Double implements Runnable {
     /**
      * Moves the wall based on its bearing and speed.
      *
-     * The wall bounces off the sides of the panel edges and phases through other walls
+     * The wall bounces off the sides of the panel edges and phases through
+     * other walls
      */
     public void move() {
         BubblePanel bubblePanel = GameManager.getInstance().getBubblePanel();
@@ -110,17 +111,21 @@ public class Wall extends Rectangle2D.Double implements Runnable {
     }
 
     /**
-     * Runs the wall's movement logic in a loop, moving the wall continuously
-     * while the isMoving flag is true.
+     * Runs the wall's movement logic
      */
     @Override
     public void run() {
-        while (isMoving) {
-            move();
+        while (true) {
+            if (isMoving) {
+                if (!GameManager.getInstance().isPaused()) {
+                    move();
+                }
+            }
+
             try {
-                Thread.sleep(App.TICK_SPEED_MS); // Controls the movement speed
+                Thread.sleep(App.TICK_SPEED_MS);
             } catch (InterruptedException e) {
-                Thread.currentThread().interrupt();  // Restore interrupted state
+                Thread.currentThread().interrupt();
                 break;
             }
         }

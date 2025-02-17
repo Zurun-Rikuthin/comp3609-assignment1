@@ -2,11 +2,16 @@ package com.rikuthin;
 
 import java.awt.Color;
 import java.awt.Point;
+import java.awt.event.ActionEvent;
 
+import javax.swing.Timer;
+
+import com.rikuthin.dialogue_panels.PauseMenuDialogue;
 import com.rikuthin.game_objects.Blaster;
 import com.rikuthin.game_objects.Bubble;
 import com.rikuthin.screen_panels.gameplay_subpanels.BlasterPanel;
 import com.rikuthin.screen_panels.gameplay_subpanels.BubblePanel;
+import com.rikuthin.screen_panels.gameplay_subpanels.StatusPanel;
 import com.rikuthin.utility.RandomColour;
 
 public class GameManager {
@@ -15,14 +20,22 @@ public class GameManager {
 
     private BlasterPanel blasterPanel;
     private BubblePanel bubblePanel;
+    private StatusPanel statusPanel;
+    private Timer gameTimer;
     private int remainingBubbles;
+    private int elapsedSeconds;
+    private int score;
     private boolean canShootBlaster;
     private boolean gameActive;
+    private boolean isPaused;
 
     private GameManager() {
         remainingBubbles = 0;
+        elapsedSeconds = 0;
+        score = 0;
         gameActive = false;
         canShootBlaster = false;
+        isPaused = false;
     }
 
     /**
@@ -54,12 +67,20 @@ public class GameManager {
         return bubblePanel;
     }
 
+    public StatusPanel getStatusPanel() {
+        return statusPanel;
+    }
+
     public void setBlasterPanel(BlasterPanel blasterPanel) {
         this.blasterPanel = blasterPanel;
     }
 
     public void setBubblePanel(BubblePanel bubblePanel) {
         this.bubblePanel = bubblePanel;
+    }
+
+    public void setStatusPanel(StatusPanel statusPanel) {
+        this.statusPanel = statusPanel;
     }
 
     /**
@@ -71,10 +92,17 @@ public class GameManager {
         }
 
         remainingBubbles = 100;
+        elapsedSeconds = 0;
+        score = 0;
         blasterPanel.updateRemainingBubblesCounter(remainingBubbles);
         bubblePanel.initialiseWalls();
         gameActive = true;
         canShootBlaster = true;
+        isPaused = false;
+
+        // Initialise and start the game timer (updates every second).
+        gameTimer = new Timer(1000, this::onTimerTick);
+        gameTimer.start();
     }
 
     /**
@@ -87,16 +115,16 @@ public class GameManager {
         if (!gameActive) {
             throw new IllegalStateException("Error: Cannot shoot bubble. Game has not started.");
         }
-        
+
         if (remainingBubbles > 0) {
-            if(canShootBlaster) {
+            if (canShootBlaster) {
                 canShootBlaster = false;
 
                 Blaster blaster = blasterPanel.getBlaster();
                 Bubble newBubble = blaster.shootBubble(target, nextRandomColour());
-                
+
                 bubblePanel.addBubble(newBubble);
-                
+
                 remainingBubbles--;
                 blasterPanel.updateRemainingBubblesCounter(remainingBubbles);
             } else {
@@ -122,5 +150,77 @@ public class GameManager {
         }
         return RandomColour.getRandomColour();
     }
-    
+
+    public int getScore() {
+        return score;
+    }
+
+    public void setScore(final int score) {
+        this.score = score;
+        updateScoreDisplay();
+    }
+
+    /**
+     * Updates the displayed score and internal score counter.
+     *
+     * @param score The new score.
+     */
+    public final void updateScoreDisplay() {
+        statusPanel.updateScoreDisplay(score);
+    }
+
+    /**
+     * Updates the timer label with a formatted elapsed time string.
+     *
+     * @param elapsedSeconds The elapsed time in seconds.
+     */
+    public void updateTimerDisplay() {
+        statusPanel.updateTimerDisplay(elapsedSeconds);
+    }
+
+    public boolean isPaused() {
+        return isPaused;  // This should be updated when the pause menu is opened/closed
+    }
+
+    /**
+     * Action invoked by the game timer every second. Increments the elapsed
+     * time and updates the timer display.
+     *
+     * @param e The action event triggered by the timer.
+     */
+    private void onTimerTick(ActionEvent e) {
+        elapsedSeconds++;
+        updateTimerDisplay();
+    }
+
+    /**
+     * Pauses the game when the pause button is clicked. Stops the timer and
+     * displays the pause menu dialogue.
+     *
+     * @param e The action event triggered by clicking the pause button.
+     */
+    public void onPause(ActionEvent e) {
+        isPaused = true;
+        gameTimer.stop();
+        showPauseMenu();
+    }
+
+    /**
+     * Displays the pause menu dialogue.
+     */
+    private void showPauseMenu() {
+        PauseMenuDialogue pauseMenuDialogue = new PauseMenuDialogue(
+                (GameFrame) statusPanel.getTopLevelAncestor(),
+                this::onResume
+        );
+        pauseMenuDialogue.setVisible(true);
+    }
+
+    /**
+     * Resumes the game by restarting the game timer.
+     */
+    private void onResume() {
+        gameTimer.start();
+        isPaused = false;
+    }
 }

@@ -89,7 +89,7 @@ public class BubblePanel extends JPanel {
 
     public void initialiseWalls() { 
         int panelWidth = Math.max(getWidth(), 150); // Ensure reasonable width
-        int numWalls = ThreadLocalRandom.current().nextInt(10) + 1;
+        int numWalls = ThreadLocalRandom.current().nextInt(8) + 3;
     
         for (int i = 0; i < numWalls; i++) {
             int x = ThreadLocalRandom.current().nextInt(panelWidth); // Full width range

@@ -3,6 +3,7 @@ package com.rikuthin.screen_panels.gameplay_subpanels;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 
@@ -41,6 +42,8 @@ public class BlasterPanel extends JPanel {
 
         // Initialise and add the remaining bubbles counter label.
         remainingBubblesCounterLabel = new JLabel();
+        remainingBubblesCounterLabel.setFont(new Font(GameFrame.BODY_TYPEFACE, Font.BOLD, 16));
+        remainingBubblesCounterLabel.setForeground(Color.WHITE);
         add(remainingBubblesCounterLabel, BorderLayout.WEST);
 
         // Configure the blaster.

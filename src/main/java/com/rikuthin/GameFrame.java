@@ -49,6 +49,7 @@ public final class GameFrame extends JFrame {
         gameManager = GameManager.getInstance();
         gameManager.setBlasterPanel(gameplayScreenPanel.getBlasterPanel());
         gameManager.setBubblePanel(gameplayScreenPanel.getBubblePanel());
+        gameManager.setStatusPanel(gameplayScreenPanel.getStatusPanel());
 
         add(mainMenuScreenPanel, PanelName.MAIN_MENU.name());
         add(gameplayScreenPanel, PanelName.GAMEPLAY.name());
