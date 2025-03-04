@@ -2,13 +2,17 @@ package com.rikuthin;
 
 import java.awt.Color;
 import java.awt.Point;
-import java.util.OptionalInt;
+import java.awt.event.ActionEvent;
 
+import javax.swing.Timer;
+
+import com.rikuthin.dialogue_panels.PauseMenuDialogue;
 import com.rikuthin.game_objects.Blaster;
 import com.rikuthin.game_objects.Bubble;
 import com.rikuthin.screen_panels.gameplay_subpanels.BlasterPanel;
 import com.rikuthin.screen_panels.gameplay_subpanels.BubblePanel;
-import com.rikuthin.utility.BubbleColour;
+import com.rikuthin.screen_panels.gameplay_subpanels.StatusPanel;
+import com.rikuthin.utility.RandomColour;
 
 public class GameManager {
 
@@ -16,11 +20,22 @@ public class GameManager {
 
     private BlasterPanel blasterPanel;
     private BubblePanel bubblePanel;
-
-    private OptionalInt remainingBubbles; // Explicitly track uninitialized state
+    private StatusPanel statusPanel;
+    private Timer gameTimer;
+    private int remainingBubbles;
+    private int elapsedSeconds;
+    private int score;
+    private boolean canShootBlaster;
+    private boolean gameActive;
+    private boolean isPaused;
 
     private GameManager() {
-        this.remainingBubbles = OptionalInt.empty(); // Indicates game hasn't started
+        remainingBubbles = 0;
+        elapsedSeconds = 0;
+        score = 0;
+        gameActive = false;
+        canShootBlaster = false;
+        isPaused = false;
     }
 
     /**
@@ -38,10 +53,9 @@ public class GameManager {
     /**
      * Returns the remaining number of bubbles left that the player can shoot.
      *
-     * @return OptionalInt containing remaining bubbles, or empty if startGame()
-     * hasn't been called.
+     * @return The remaining number of bubbles
      */
-    public OptionalInt getRemainingBubbles() {
+    public int getRemainingBubbles() {
         return remainingBubbles;
     }
 
@@ -53,6 +67,10 @@ public class GameManager {
         return bubblePanel;
     }
 
+    public StatusPanel getStatusPanel() {
+        return statusPanel;
+    }
+
     public void setBlasterPanel(BlasterPanel blasterPanel) {
         this.blasterPanel = blasterPanel;
     }
@@ -61,26 +79,30 @@ public class GameManager {
         this.bubblePanel = bubblePanel;
     }
 
-    /**
-     * Starts a new game by initializing the bubble count. If the game is
-     * already running, it does nothing.
-     */
-    public void startGame() {
-        if (remainingBubbles.isEmpty()) {
-            remainingBubbles = OptionalInt.of(50);
-            blasterPanel.updateRemainingBubblesCounter(50);
-        } else {
-            System.err.println("Warning: Attempted to start a game that is already running.");
-        }
+    public void setStatusPanel(StatusPanel statusPanel) {
+        this.statusPanel = statusPanel;
     }
 
     /**
-     * Resets the game to its initial state, allowing the player to start again.
-     * If the game is already in progress, it will be reset.
+     * Starts a new game by resetting/initialising game values/objects.
      */
-    public void resetGame() {
-        remainingBubbles = OptionalInt.of(50);
-        blasterPanel.updateRemainingBubblesCounter(50);
+    public void startGame() {
+        if (blasterPanel == null || bubblePanel == null) {
+            throw new IllegalStateException("Error: Game cannot start. BlasterPanel and BubblePanel must be set first.");
+        }
+
+        remainingBubbles = 100;
+        elapsedSeconds = 0;
+        score = 0;
+        blasterPanel.updateRemainingBubblesCounter(remainingBubbles);
+        bubblePanel.initialiseWalls();
+        gameActive = true;
+        canShootBlaster = true;
+        isPaused = false;
+
+        // Initialise and start the game timer (updates every second).
+        gameTimer = new Timer(1000, this::onTimerTick);
+        gameTimer.start();
     }
 
     /**
@@ -90,31 +112,115 @@ public class GameManager {
      * @param target The point to shoot the bubble towards.
      */
     public void shootBubble(Point target) {
-        if (remainingBubbles.isEmpty()) {
-            System.err.println("Error: Cannot shoot bubble. Game has not started.");
-            return;
+        if (!gameActive) {
+            throw new IllegalStateException("Error: Cannot shoot bubble. Game has not started.");
         }
 
-        remainingBubbles.ifPresent(bubbleCount -> {
-            if (bubbleCount > 0) {
+        if (remainingBubbles > 0) {
+            if (canShootBlaster) {
+                canShootBlaster = false;
+
                 Blaster blaster = blasterPanel.getBlaster();
-                Bubble newBubble = blaster.shootBubble(target, nextBubbleColour());
+                Bubble newBubble = blaster.shootBubble(target, nextRandomColour());
+
                 bubblePanel.addBubble(newBubble);
 
-                remainingBubbles = OptionalInt.of(bubbleCount - 1);
-                blasterPanel.updateRemainingBubblesCounter(bubbleCount - 1);
+                remainingBubbles--;
+                blasterPanel.updateRemainingBubblesCounter(remainingBubbles);
             } else {
-                System.err.println("Warning: No more bubbles left to shoot.");
+                System.err.println("Warning: Bubble already fired. Wait for it to stop moving.");
             }
-        });
+        } else {
+            System.err.println("Warning: No more bubbles left to shoot.");
+        }
+    }
+
+    public void onBubbleMovementComplete() {
+        canShootBlaster = true;
     }
 
     /**
      * Chooses the next bubble's color randomly.
      *
-     * @return The next BubbleColour.
+     * @return The next random colour.
      */
-    private Color nextBubbleColour() {
-        return BubbleColour.getRandomColour();
+    private Color nextRandomColour() {
+        if (!gameActive) {
+            throw new IllegalStateException("Cannot select color when game is not active.");
+        }
+        return RandomColour.getRandomColour();
+    }
+
+    public int getScore() {
+        return score;
+    }
+
+    public void setScore(final int score) {
+        this.score = score;
+        updateScoreDisplay();
+    }
+
+    /**
+     * Updates the displayed score and internal score counter.
+     *
+     * @param score The new score.
+     */
+    public final void updateScoreDisplay() {
+        statusPanel.updateScoreDisplay(score);
+    }
+
+    /**
+     * Updates the timer label with a formatted elapsed time string.
+     *
+     * @param elapsedSeconds The elapsed time in seconds.
+     */
+    public void updateTimerDisplay() {
+        statusPanel.updateTimerDisplay(elapsedSeconds);
+    }
+
+    public boolean isPaused() {
+        return isPaused;  // This should be updated when the pause menu is opened/closed
+    }
+
+    /**
+     * Action invoked by the game timer every second. Increments the elapsed
+     * time and updates the timer display.
+     *
+     * @param e The action event triggered by the timer.
+     */
+    private void onTimerTick(ActionEvent e) {
+        elapsedSeconds++;
+        updateTimerDisplay();
+    }
+
+    /**
+     * Pauses the game when the pause button is clicked. Stops the timer and
+     * displays the pause menu dialogue.
+     *
+     * @param e The action event triggered by clicking the pause button.
+     */
+    public void onPause(ActionEvent e) {
+        isPaused = true;
+        gameTimer.stop();
+        showPauseMenu();
+    }
+
+    /**
+     * Displays the pause menu dialogue.
+     */
+    private void showPauseMenu() {
+        PauseMenuDialogue pauseMenuDialogue = new PauseMenuDialogue(
+                (GameFrame) statusPanel.getTopLevelAncestor(),
+                this::onResume
+        );
+        pauseMenuDialogue.setVisible(true);
+    }
+
+    /**
+     * Resumes the game by restarting the game timer.
+     */
+    private void onResume() {
+        gameTimer.start();
+        isPaused = false;
     }
 }

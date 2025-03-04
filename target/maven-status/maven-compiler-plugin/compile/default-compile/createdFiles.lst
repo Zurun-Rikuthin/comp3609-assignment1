@@ -2,6 +2,7 @@ com\rikuthin\utility\Bearing2D.class
 com\rikuthin\GameManager.class
 com\rikuthin\GameFrame$PanelName.class
 com\rikuthin\screen_panels\MainMenuScreenPanel.class
+com\rikuthin\utility\RandomColour.class
 com\rikuthin\screen_panels\ScreenPanel.class
 com\rikuthin\game_objects\Blaster.class
 com\rikuthin\screen_panels\gameplay_subpanels\BlasterPanel.class
@@ -10,8 +11,10 @@ com\rikuthin\screen_panels\GameplayScreenPanel.class
 com\rikuthin\Settings.class
 com\rikuthin\App.class
 com\rikuthin\GameFrame.class
+com\rikuthin\screen_panels\gameplay_subpanels\BubblePanel$2.class
 com\rikuthin\screen_panels\gameplay_subpanels\BubblePanel.class
-com\rikuthin\utility\BubbleColour.class
+com\rikuthin\utility\MouseTracker.class
+com\rikuthin\game_objects\Wall.class
 com\rikuthin\game_objects\Bubble.class
 com\rikuthin\screen_panels\gameplay_subpanels\BubblePanel$1.class
 com\rikuthin\dialogue_panels\PauseMenuDialogue$1.class

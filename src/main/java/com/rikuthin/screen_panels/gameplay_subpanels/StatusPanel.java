@@ -3,17 +3,15 @@ package com.rikuthin.screen_panels.gameplay_subpanels;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
-import java.awt.event.ActionEvent;
 
 import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
-import javax.swing.Timer;
 
 import com.rikuthin.GameFrame;
-import com.rikuthin.dialogue_panels.PauseMenuDialogue;
+import com.rikuthin.GameManager;
 import static com.rikuthin.utility.ButtonUtil.createButton;
 
 /**
@@ -28,7 +26,6 @@ public final class StatusPanel extends JPanel {
     private final JButton pauseMenuButton;
     private final JLabel scoreLabel;
     private final JLabel timerLabel;
-    private final Timer gameTimer;
 
     private int score;
     private int elapsedSeconds;
@@ -50,7 +47,10 @@ public final class StatusPanel extends JPanel {
         Font buttonFont = new Font(GameFrame.BODY_TYPEFACE, Font.PLAIN, 16);
 
         // Create the pause button.
-        pauseMenuButton = createButton("PAUSE", buttonFont, 100, 40, true, this::onPause);
+        pauseMenuButton = createButton(
+                "PAUSE", buttonFont, 100, 40, true,
+                GameManager.getInstance()::onPause
+        );
 
         // Create the score and timer labels.
         scoreLabel = createStatusLabel();
@@ -66,50 +66,16 @@ public final class StatusPanel extends JPanel {
         add(Box.createHorizontalStrut(20));
 
         // Initialise the score display.
-        updateScore(0);
-
-        // Initialise and start the game timer (updates every second).
-        gameTimer = new Timer(1000, this::onTimerTick);
-        gameTimer.start();
+        updateScoreDisplay(0);
     }
 
     /**
-     * Returns the total elapsed time in seconds since the game started.
-     *
-     * @return The elapsed seconds.
-     */
-    public int getElapsedSeconds() {
-        return elapsedSeconds;
-    }
-
-    /**
-     * Returns the current score.
-     *
-     * @return The current score.
-     */
-    public int getScore() {
-        return score;
-    }
-
-    /**
-     * Updates the displayed score and internal score counter.
+     * Updates the displayed score
      *
      * @param score The new score.
      */
-    public final void updateScore(final int score) {
-        this.score = score;
+    public final void updateScoreDisplay(final int score) {
         scoreLabel.setText(String.format("Score: %d", score));
-    }
-
-    /**
-     * Action invoked by the game timer every second. Increments the elapsed
-     * time and updates the timer display.
-     *
-     * @param e The action event triggered by the timer.
-     */
-    private void onTimerTick(ActionEvent e) {
-        elapsedSeconds++;
-        updateTimer(elapsedSeconds);
     }
 
     /**
@@ -117,43 +83,16 @@ public final class StatusPanel extends JPanel {
      *
      * @param elapsedSeconds The elapsed time in seconds.
      */
-    private void updateTimer(final int elapsedSeconds) {
+    public void updateTimerDisplay(final int elapsedSeconds) {
         int minutes = elapsedSeconds / 60;
         int seconds = elapsedSeconds % 60;
         timerLabel.setText(String.format("Elapsed Time: %d:%02d", minutes, seconds));
     }
 
     /**
-     * Pauses the game when the pause button is clicked. Stops the timer and
-     * displays the pause menu dialogue.
-     *
-     * @param e The action event triggered by clicking the pause button.
-     */
-    private void onPause(ActionEvent e) {
-        gameTimer.stop();
-        showPauseMenu();
-    }
-
-    /**
-     * Displays the pause menu dialogue.
-     */
-    private void showPauseMenu() {
-        PauseMenuDialogue pauseMenuDialogue = new PauseMenuDialogue(
-                (GameFrame) getTopLevelAncestor(),
-                this::onResume
-        );
-        pauseMenuDialogue.setVisible(true);
-    }
-
-    /**
-     * Resumes the game by restarting the game timer.
-     */
-    private void onResume() {
-        gameTimer.start();
-    }
-
-    /**
      * Creates a JLabel for displaying status information (score or timer).
+     *
+     * Buggy at the moment
      *
      * @return A configured JLabel.
      */

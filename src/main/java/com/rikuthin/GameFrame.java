@@ -34,7 +34,7 @@ public final class GameFrame extends JFrame {
      * instance and sets the blaster and bubble panels.
      */
     public GameFrame() {
-        setTitle("Untitled Bubble Shooter");
+        setTitle("Thread the Needle");
         setSize(FRAME_WIDTH, FRAME_HEIGHT);
         setResizable(false);
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
@@ -49,6 +49,7 @@ public final class GameFrame extends JFrame {
         gameManager = GameManager.getInstance();
         gameManager.setBlasterPanel(gameplayScreenPanel.getBlasterPanel());
         gameManager.setBubblePanel(gameplayScreenPanel.getBubblePanel());
+        gameManager.setStatusPanel(gameplayScreenPanel.getStatusPanel());
 
         add(mainMenuScreenPanel, PanelName.MAIN_MENU.name());
         add(gameplayScreenPanel, PanelName.GAMEPLAY.name());
